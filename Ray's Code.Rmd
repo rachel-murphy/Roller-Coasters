@@ -1,0 +1,74 @@
+---
+title: "Ray's Code"
+author: "Ray Murphy"
+date: "11/27/2021"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+get_info <- function(ttcodes){
+  url <- array() ; a <- array()
+  
+  for (i in length(ttcodes)) {
+      url[i] <- paste("https://captaincoaster.com/en/coasters/", ttcodes[i], sep="")
+
+      a[i]<- try(read_html(url[i]) %>% html_nodes(".text-semibold.text-right") %>% html_text() %>% 
+                   parse_number(locale=locale(decimal_mark=",")), silent=TRUE)
+  }
+
+  a
+}
+
+review1 <- review1 %>% mutate(url = tolower(paste(Rollercoaster, Amusement.Park)))
+addition_url <-str_remove_all(review1$url, "[.]")
+addition_url <-str_remove_all(addition_url, "[,]")
+addition_url <-str_remove_all(addition_url, "[-]")
+addition_url <-str_replace_all(addition_url, fixed("'"), "-")
+addition_url <-str_replace_all(addition_url, fixed(" "), "-")
+addition_url <- as.array(addition_url)
+
+get_info(addition_url)
+```
+
+```{r}
+url <- NULL
+for(i in 1:3){
+  url[i] <- paste("https://captaincoaster.com/en/coasters/zadra-energylandia", i, sep="")
+
+}
+url[1] <- "https://captaincoaster.com/en/coasters/zadra-energylandia"
+
+h <- NULL
+for(i in 1:3){
+h[i]<- try(read_html(url[i]) %>% html_nodes(".col-xs-6:nth-child(1) .text-bold:nth-child(1)") %>% html_text() %>% parse_number(locale=locale(decimal_mark=",")), silent=TRUE)
+
+}
+h
+```
+
+
+```{r}
+review1<-read.csv("Roller Coaster Reviews.csv")
+review2<-read.csv("Coaster Reviews 2.csv")
+review1<-rename(review1,Rollercoaster = ï..Roller.Coaster)
+review2<-rename(review2, Rollercoaster = ï..Roller.coaster)
+#review1$Roller.coaster <- paste(review1$Rollercoaster, ",",review1$Amusement.Park)
+
+review2<-review2 %>% separate(Rollercoaster, c('Rollercoaster', 'Amusement.Park'), sep = ",")
+# merge two data frames by ID
+total <- merge(review1,review2,by="Rollercoaster")
+
+database<-read.csv("coaster_db.csv")
+anotha <- read.csv("IT Export.csv")
+anotha1 <- read.csv("roller_coasters.csv")
+anotha1 <- rename(anotha1, Rollercoaster=name)
+anotha <- rename(anotha, Rollercoaster=Coaster)
+database<- rename(database, Rollercoaster = coaster_name)
+yeet<-merge(database,total, by= "Rollercoaster")
+omg <- merge(anotha, total, by="Rollercoaster")
+hehe <- merge(database, review1, by="Rollercoaster")
+```

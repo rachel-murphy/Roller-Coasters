@@ -1,0 +1,66 @@
+---
+title: "Alex's <useless> Code"
+output: html_notebook
+---
+
+```{r}
+# Specs for one coaster, uses specific url for coaster, actually works
+url <- "https://captaincoaster.com/en/coasters/hakugei-nagashima-spa-land"
+
+gather_reviews <- function(url) {
+  page <- read_html(url)
+  reviews <- html_nodes(page, "h1 , .content-group+ .panel-white .list-group-item , .text-blue , .text-bold , .panel-body:nth-child(1)")
+  reviews <- html_text(reviews, trim = TRUE)
+}
+
+reviews <- gather_reviews(url) %>% as.data.frame()
+```
+
+```{r}
+# Trying to get names and cities of coasters... doesn't work
+library(rvest)
+pre <- "https://captaincoaster.com/en/ranking/?filters%5Bcontinent%5D=&filters%5Bcountry%5D=&filters%5BmaterialType%5D=&filters%5BseatingType%5D=&filters%5Bmodel%5D=&filters%5Bmanufacturer%5D=&filters%5BopeningDate%5D=&page="
+
+post <- 1:65
+links <- paste(pre, post, sep = "")
+links <- as.data.frame(links)
+
+
+gather_reviews <- function(url) {
+  page <- read_html(url)
+  reviews <- html_nodes(page, ".content")
+}
+```
+
+
+
+```{r}
+#Just uh trying to scrape the names and cities again
+url2 <- "https://captaincoaster.com/en/ranking/?filters%5Bcontinent%5D=&filters%5Bcountry%5D=&filters%5BmaterialType%5D=&filters%5BseatingType%5D=&filters%5Bmodel%5D=&filters%5Bmanufacturer%5D=&filters%5BopeningDate%5D=&page=1"
+
+gather_reviews <- function(url2) {
+  page <- read_html(url)
+  reviews <- html_nodes(page, ".mb-5 .text-muted")
+  reviews <- html_text(reviews, trim = TRUE)
+}
+
+names <- gather_reviews(url2) %>% as.data.frame()
+```
+
+```{r}
+# Test vector of names and cities to add to rest of url for scraping DOESN'T WORK fu
+cities <- c("steel-vengeance-cedar-point","zadra-energylandia","hakugei-nagashima-spa-land","taiga-linnanmaki")
+pre <- "https://captaincoaster.com/en/coasters/"
+links <- paste(pre, cities, sep = "")
+links <- as.data.frame(links)
+
+gather_reviews <- function(url) {
+  page <- read_html(url)
+  reviews <- html_nodes(page, "h1 , .content-group+ .panel-white .list-group-item , .text-blue , .text-bold , .panel-body:nth-child(1)")
+  reviews <- html_text(reviews, trim = TRUE)
+}
+
+all_reviews <- apply(links, 1, gather_reviews) %>% as.data.frame()
+```
+
+

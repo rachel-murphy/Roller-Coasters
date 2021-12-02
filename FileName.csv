@@ -1,0 +1,257 @@
+url,Rollercoaster,Amusement.Park,Rating,Roller.Coaster.Design,material_type,seating_type,speed.x,height.x,length.x,num_inversions,manufacturer,status.x,score,launch,restraint
+swamp-fox-family-kingdom-amusement-park,Swamp Fox,Family Kingdom Amusement Park,7.0 (Good),John Allen Wooden Coaster,Wooden,Sit Down,80,22,805,0,Philadelphia Toboggan Coaster,status.operating,56.6,"
+                                  Chain lift hill
+                                                ",Common lap bar
+blue-streak-conneaut-lake-park,Blue Streak,Conneaut Lake Park,7.0 (Good),Ed Vettel Wooden Coaster,Wooden,Sit Down,64,24,780,0,Philadelphia Toboggan Coaster,status.operating,50,"
+                                  Chain lift hill
+                                                ",Common lap bar
+batwing-six-flags-america,Batwing,Six Flags America,7.5 (Good),Vekoma Flying Coaster,Steel,Flying,81,35,1018,5,Vekoma,status.operating,67,"
+                                  Chain lift hill
+                                                ",Flying restraint
+tatsu-six-flags-magic-mountain,Tatsu,Six Flags Magic Mountain,9.0 (Excellent),B&M Flying Coaster,Steel,Flying,100,52,1097,4,B&M,status.operating,94,"
+                                  Chain lift hill
+                                                ",Flying restraint
+great-american-scream-machine-six-flags-over-georgia,Great American Scream Machine,Six Flags Over Georgia,5.0 (Average),"Rosser, Allen, & Cobb Wooden Coaster",Steel,Sit Down,109,53,1158,7,Arrow,status.closed.definitely,35.7,"
+                                  Chain lift hill
+                                                ",Lap bar
+screamin-eagle-six-flags-st-louis,Screamin' Eagle,Six Flags St. Louis,7.5 (Good),Wooden Coaster,Wooden,Sit Down,100,34,1180,0,Philadelphia Toboggan Coaster,status.operating,52.2,"
+                                  Chain lift hill
+                                                ",Lap bar
+beast-kings-island,Beast,Kings Island,10 (Superior),Wooden Terrain Coaster,Wooden,Sit Down,104,34,2243,0,Charlie Dinn,status.operating,82.6,"
+                                  Chain lift hill
+                                                ",Lap bar
+phoenix-knoebels,Phoenix,Knoebels,9.0 (Excellent),Wooden Coaster,Wooden,Sit Down,72,24,975,0,Philadelphia Toboggan Coaster,status.operating,94.2,"
+                                  Chain lift hill
+                                                ",Lap bar
+predator-darien-lake,Predator,Darien Lake,2.0 (Horrible),Curtis Summers Wooden Coaster,Wooden,Sit Down,80,29,1036,0,Dinn Corp.,status.operating,30.5,"
+                                  Chain lift hill
+                                                ",Lap bar
+mean-streak-cedar-point,Mean Streak,Cedar Point,5.0 (Average),Curtis Summers Wooden Coaster,Wooden,Sit Down,100,49,1654,0,Dinn Corp.,status.retracked,30.9,"
+                                  Chain lift hill
+                                                ",Lap bar
+rattler-six-flags-fiesta-texas,Rattler,Six Flags Fiesta Texas,5.0 (Average),John Pierce Wooden Coaster,Wooden,Sit Down,104,54,1550,0,RCCA,status.retracked,10.7,"
+                                  Chain lift hill
+                                                ",Lap bar
+hurler-carowinds,Hurler,Carowinds,5.5 (Average),International Coasters Woodie,Wooden,Sit Down,80,25,962,0,Philadelphia Toboggan Coaster,status.retracked,28.5,"
+                                  Chain lift hill
+                                                ",Lap bar
+viper-six-flags-great-america,Viper,Six Flags Great America,7.0 (Good),Stand Company Wooden Coaster,Steel,Sit Down,112,57,1167,7,Arrow,status.operating,68,"
+                                  Chain lift hill
+                                                ",Lap bar
+flight-of-fear-kings-dominion,Flight of Fear,Kings Dominion,7.5 (Good),Premier Launch Coaster,Steel,Sit Down,87,23,825,4,Premier Rides,status.operating,66.5,"
+                                  Magnetic Launch (LIM/LSM)
+                                                ",Lap bar
+wildcat-hersheypark,Wildcat,Hersheypark,3.5 (Bad),GCI Wooden Twister Coaster,Steel,Sit Down,50,15,560,0,Schwarzkopf,status.closed.definitely,41.8,"
+                                  Chain lift hill
+                                                ",Lap bar
+steel-force-dorney-park,Steel Force,Dorney Park,7.5 (Good),Morgan Hyper Coaster,Steel,Sit Down,120,61,1706,0,Morgan,status.operating,77.1,"
+                                  Chain lift hill
+                                                ",Lap bar
+shivering-timbers-michigan-s-adventure,Shivering Timbers,Michigan's Adventure,8.5 (Great),CCI Wooden Coaster,Steel,Sit Down,92,37,1641,0,CCI,status.operating,81.9,"
+                                  Chain lift hill
+                                                ",Lap bar
+twister-knoebels,Twister,Knoebels,9.0 (Excellent),Wooden Twister Coaster,Steel,Sit Down,47,13,420,0,Reverchon,status.operating,74.7,"
+                                  Chain lift hill
+                                                ",Lap bar
+boulder-dash-lake-compounce,Boulder Dash,Lake Compounce,9.5 (Excellent),CCI Wooden Terrain Coaster,Wooden,Sit Down,97,35,1440,0,CCI,status.operating,90.4,"
+                                  Chain lift hill
+                                                ",Lap bar
+the-boss-six-flags-st-louis,The Boss,Six Flags St. Louis,3.0 (Bad),CCI Wooden Coaster,Wooden,Sit Down,106,46,1540,0,CCI,status.operating,62.9,"
+                                  Chain lift hill
+                                                ",Lap bar
+phantom-s-revenge-kennywood,Phantom's Revenge,Kennywood,8.5 (Great),Arrow/Morgan Hyper Coaster,Steel,Sit Down,132,70,975,0,Arrow,status.operating,92.3,"
+                                  Chain lift hill
+                                                ",Lap bar
+titan-six-flags-over-texas,Titan,Six Flags Over Texas,7.0 (Good),Giovanola Hyper Coaster,Steel,Sit Down,137,75,1619,0,Giovanola,status.operating,70.7,"
+                                  Chain lift hill
+                                                ",Lap bar
+coastersaurus-legoland-florida,Coastersaurus,Legoland Florida,6.0 (Above Average),Martin & Vleminckx Wooden Coaster,Steel,Sit Down,52,12,416,0,Martin & Vleminckx,status.operating,32.8,"
+                                  Chain lift hill
+                                                ",Lap bar
+thunderhead-dollywood,Thunderhead,Dollywood,8.5 (Great),GCI Wooden Twister Coaster,Wooden,Sit Down,89,31,985,0,GCI,status.operating,80.4,"
+                                  Chain lift hill
+                                                ",Lap bar
+pandemonium-six-flags-new-england,Pandemonium,Six Flags New England,8.5 (Great),Gerstlauer Spinning Coaster,Steel,Spinning,50,17,410,0,Gerstlauer,status.operating,48.7,"
+                                  Chain lift hill
+                                                ",Lap bar
+fahrenheit-hersheypark,Fahrenheit,Hersheypark,9.0 (Excellent),Intamin Looping Coaster,Steel,Sit Down,93,37,823,6,Intamin,status.operating,82,"
+                                  Chain lift hill
+                                                ",Lap bar
+wicker-man-alton-towers,Wicker Man,Alton Towers,9.0 (Excellent),GCI Wooden Twister Coaster,Wooden,Sit Down,71,22,618,0,GCI,status.operating,76.4,"
+                                  Chain lift hill
+                                                ",Lap bar
+intimidator-carowinds,Intimidator,Carowinds,9.0 (Excellent),B&M Hyper Coaster,Steel,Sit Down,120,71,1620,0,B&M,status.operating,86.7,,Lap bar
+mr-freeze-reverse-blast-six-flags-st-louis,Mr. Freeze Reverse Blast,Six Flags St. Louis,7.5 (Good),Premier Launch Coaster,Steel,Sit Down,113,66,396,1,Premier Rides,status.operating,85,"
+                                  Magnetic Launch (LIM/LSM)
+                                                ",Lap bar
+mystic-timbers-kings-island,Mystic Timbers,Kings Island,9.0 (Excellent),GCI Wooden Coaster,Wooden,Sit Down,85,33,995,0,GCI,status.operating,91.4,"
+                                  Chain lift hill
+                                                ",Lap bar
+ravine-flyer-ii-waldameer,Ravine Flyer II,Waldameer,10 (Superior),Gravity Group Wooden Coaster,Hybrid,Sit Down,91,24,884,0,Gravity Group,status.operating,92.3,"
+                                  Chain lift hill
+                                                ",Lap bar
+american-thunder-six-flags-st-louis,American Thunder,Six Flags St. Louis,8.0 (Great),GCI Wooden Twister Coaster,Wooden,Sit Down,77,25,827,0,GCI,status.operating,78.1,"
+                                  Chain lift hill
+                                                ",Lap bar
+sky-rocket-kennywood,Sky Rocket,Kennywood,8.0 (Great),Premier Launch Coaster,Steel,Sit Down,80,29,640,3,Premier Rides,status.operating,60.3,"
+                                  Magnetic Launch (LIM/LSM)
+                                                ",Lap bar
+steel-curtain-kennywood,Steel Curtain,Kennywood,10.0 (Superior),S&S Looping Coaster,Steel,Sit Down,120,67,1220,9,S&S,status.operating,87.2,"
+                                  Chain lift hill
+                                                ",Lap bar
+cannibal-lagoon,Cannibal,Lagoon,10 (Superior),Custom Mega Coaster,Steel,Sit Down,113,64,835,4,ART Engineering,status.operating,89.8,"
+                                  Vertical lift
+                                                ",Lap bar
+apollo-s-chariot-busch-gardens-williamsburg,Apollo's Chariot,Busch Gardens Williamsburg,10 (Superior),B&M Hyper Coaster,Steel,Sit Down,118,52,1488,0,B&M,status.operating,90.1,"
+                                  Chain lift hill
+                                                ",Lap bar
+avalanche-kings-dominion,Avalanche,Kings Dominion,6.0 (Above Average),Mack Boblsed Coaster,Steel,Bobsleigh,50,20,455,0,Mack,status.operating,42,"
+                                  Chain lift hill
+                                                ",Lap bar
+cobra-s-curse-busch-gardens-tampa,Cobra's Curse,Busch Gardens Tampa,7.0 (Good),Mack Spinning Coaster,Steel,Spinning,65,21,640,0,Mack,status.operating,53.4,"
+                                  Vertical lift
+                                                ",Lap bar
+copperhead-strike-carowinds,Copperhead Strike,Carowinds,9.0 (Excellent),Mack Launch Coaster,Steel,Sit Down,80,25,992,5,Mack,status.operating,87,"
+                                  Magnetic Launch (LIM/LSM)
+                                                ",Lap bar
+dare-devil-dive-six-flags-over-georgia,Dare Devil Dive,Six Flags Over Georgia,7.5 (Good),Gerstlauer Looping Coaster,Steel,Sit Down,84,29,640,3,Gerstlauer,status.operating,61.5,"
+                                  Chain lift hill
+                                                ",Lap bar
+disaster-transport-cedar-point,Disaster Transport,Cedar Point,5.0 (Average),Intamin Indoor Bobsled Coaster,Steel,Bobsleigh,64,19,589,0,Intamin,status.closed.definitely,31.1,"
+                                  Chain lift hill
+                                                ",Lap bar
+el-toro-six-flags-great-adventure,El Toro,Six Flags Great Adventure,10 (Superior),Intamin Wooden Coaster,Wooden,Sit Down,113,55,1341,0,Intamin,status.operating,99.2,"
+                                  Cable lift hill
+                                                ",Lap bar
+goliath-six-flags-over-georgia,Goliath,Six Flags Over Georgia,9.0 (Excellent),B&M Hyper Coaster,Steel,Sit Down,137,71,1370,0,Giovanola,status.operating,93.1,"
+                                  Chain lift hill
+                                                ",Lap bar
+leviathan-canada-s-wonderland,Leviathan,Canada's Wonderland,10 (Superior),B&M Giga Coaster,Steel,Sit Down,148,93,1672,0,B&M,status.operating,93.8,"
+                                  Chain lift hill
+                                                ",Lap bar
+lightning-rod-dollywood,Lightning Rod,Dollywood,10 (Superior),RMC Launch Wooden Coaster,Wooden,Sit Down,118,50,1158,0,RMC,status.operating,99.4,"
+                                  Magnetic Launch (LIM/LSM)
+                                                ",Lap bar
+new-texas-giant-six-flags-over-texas,New Texas Giant,Six Flags Over Texas,10 (Superior),Rocky Mountain Steel Coaster,Hybrid,Sit Down,105,47,1280,0,RMC,status.operating,94.3,"
+                                  Chain lift hill
+                                                ",Lap bar
+nitro-six-flags-great-adventure,Nitro,Six Flags Great Adventure,9.0 (Excellent),B&M Hyper Coaster,Steel,Sit Down,128,70,1644,0,B&M,status.operating,92.1,"
+                                  Chain lift hill
+                                                ",Lap bar
+raging-bull-six-flags-great-america,Raging Bull,Six Flags Great America,8.0 (Great),B&M Hyper Coaster,Steel,Sit Down,118,62,1542,0,B&M,status.operating,80.7,"
+                                  Chain lift hill
+                                                ",Lap bar
+steel-vengeance-cedar-point,Steel Vengeance,Cedar Point,10 (Superior),RMC Hybrid Mega Coaster,Hybrid,Sit Down,119,62,1750,4,RMC,status.operating,100,"
+                                  Chain lift hill
+                                                ",Lap bar
+tempesto-busch-gardens-williamsburg,Tempesto,Busch Gardens Williamsburg,7.0 (Good),Premier Sky Rocket II,Steel,Sit Down,100,46,263,1,Premier Rides,status.operating,63.9,"
+                                  Magnetic Launch (LIM/LSM)
+                                                ",Lap bar
+time-traveler-silver-dollar-city,Time Traveler,Silver Dollar City,9.0 (Excellent),Mack X-treme Spinning Coaster,Steel,Spinning,80,30,920,3,Mack,status.operating,94.9,"
+                                  Magnetic Launch (LIM/LSM)
+                                                ",Lap bar
+top-thrill-dragster-cedar-point,Top Thrill Dragster,Cedar Point,9.0 (Excellent),Intamin Launch Coaster,Steel,Sit Down,192,128,853,0,Intamin,status.operating,96.1,"
+                                  Hydraulic cable launch
+                                                ",Lap bar
+twisted-timbers-kings-dominion,Twisted Timbers,Kings Dominion,9.0 (Excellent),RMC Hybrid Coaster,Hybrid,Sit Down,87,34,1024,3,RMC,status.operating,98.8,"
+                                  Chain lift hill
+                                                ",Lap bar
+wicked-lagoon,Wicked,Lagoon,8.0 (Great),Zierer Tower Launch Coaster,Steel,Sit Down,90,35,625,1,Zierer,status.operating,70.1,"
+                                  Magnetic Launch (LIM/LSM)
+                                                ",Lap bar
+whizzer-six-flags-great-america,Whizzer,Six Flags Great America,7.0 (Good),Schwarzkopf Terrain Coaster,Steel,Sit Down,68,21,945,0,Schwarzkopf,status.operating,46.3,"
+                                  Electrical lift hill
+                                                ",None
+demon-six-flags-great-america,Demon,Six Flags Great America,7.0 (Good),Arrow Looping Coaster,Steel,Sit Down,81,31,649,4,Arrow,status.operating,18,"
+                                  Chain lift hill
+                                                ",Shoulder harness
+loch-ness-monster-busch-gardens-williamsburg,Loch Ness Monster,Busch Gardens Williamsburg,8.0 (Great),Arrow Looping Coaster,Steel,Sit Down,96,39,987,2,Arrow,status.operating,59.8,"
+                                  Chain lift hill
+                                                ",Shoulder harness
+shockwave-kings-dominion,Shockwave,Kings Dominion,3.5 (Bad),Togo Stand Up Coaster,Steel,Stand Up,80,36,500,4,Intamin,status.operating,21.4,"
+                                  Chain lift hill
+                                                ",Shoulder harness
+anaconda-kings-dominion,Anaconda,Kings Dominion,6.5 (Above Average),Arrow Looping Coaster,Wooden,Sit Down,85,35,1200,0,William J. Cobb,status.operating,21.5,"
+                                  Chain lift hill
+                                                ",Shoulder harness
+canyon-blaster-adventuredome,Canyon Blaster,Adventuredome,7.0 (Good),Arrow Looping Coaster,Steel,Sit Down,26,4,152,0,Miler Coaster,status.operating,37.9,"
+                                  Chain lift hill
+                                                ",Shoulder harness
+tennessee-tornado-dollywood,Tennessee Tornado,Dollywood,7.0 (Good),Arrow Looping Coaster,Steel,Sit Down,101,50,818,3,Arrow,status.operating,75.5,"
+                                  Chain lift hill
+                                                ",Shoulder harness
+x2-six-flags-magic-mountain,X2,Six Flags Magic Mountain,8.5 (Great),Arrow/S&S 4th Dimension Coaster,Steel,4th Dimension,122,53,1100,6,Arrow,status.operating,97.1,"
+                                  Chain lift hill
+                                                ",Shoulder harness
+wild-eagle-dollywood,Wild Eagle,Dollywood,9.0 (Excellent),B&M Wing Coaster,Steel,Wing,98,64,953,4,B&M,status.operating,78.5,"
+                                  Chain lift hill
+                                                ",Shoulder harness
+big-bad-wolf-busch-gardens-williamsburg,Big Bad Wolf,Busch Gardens Williamsburg,7.5 (Good),Arrow Suspended Coaster,Steel,Suspended,77,31,853,0,Arrow,status.closed.definitely,66.4,"
+                                  Chain lift hill
+                                                ",Shoulder harness
+banshee-kings-island,Banshee,Kings Island,9.5 (Excellent),B&M Inverted Coaster,Steel,Inverted,110,51,1260,7,B&M,status.operating,84.7,"
+                                  Chain lift hill
+                                                ",Shoulder harness
+blue-hawk-six-flags-over-georgia,Blue Hawk,Six Flags over Georgia,7.0 (Good),Vekoma Looping Coaster,Steel,Sit Down,84,37,836,5,Vekoma,status.operating,18.5,"
+                                  Chain lift hill
+                                                ",Shoulder harness
+colossus-thorpe-park,Colossus,Thorpe Park,6.0 (Above Average),Intamin Looping Coaster,Steel,Sit Down,72,30,850,10,Intamin,status.operating,43.6,"
+                                  Chain lift hill
+                                                ",Shoulder harness
+georgia-scorcher-six-flags-over-georgia,Georgia Scorcher,Six Flags Over Georgia,6.5 (Above Average),B&M Stand Up Coaster,Steel,Stand Up,87,33,914,2,B&M,status.operating,59.8,"
+                                  Chain lift hill
+                                                ",Shoulder harness
+great-bear-hersheypark,Great Bear,Hersheypark,8.0 (Great),B&M Inverted Coaster,Steel,Inverted,93,27,853,4,B&M,status.operating,81.7,"
+                                  Chain lift hill
+                                                ",Shoulder harness
+griffon-busch-gardens-williamsburg,Griffon,Busch Gardens Williamsburg,8.5 (Great),B&M Dive Coaster,Steel,Floorless,120,62,950,2,B&M,status.operating,91.6,"
+                                  Chain lift hill
+                                                ",Shoulder harness
+intimidator-305-kings-dominion,Intimidator 305,Kings Dominion,9.0 (Excellent),Intamin Giga Coaster,Steel,Sit Down,145,93,1555,0,Intamin,status.operating,97.6,"
+                                  Cable lift hill
+                                                ",Shoulder harness
+kingda-ka-six-flags-great-adventure,Kingda Ka,Six Flags Great Adventure,8.0 (Great),Intamin Strata Coaster,Steel,Sit Down,206,139,950,0,Intamin,status.operating,90.3,"
+                                  Hydraulic cable launch
+                                                ",Shoulder harness
+mantis-cedar-point,Mantis,Cedar Point,4.0 (Below Average),B&M Stand Up Coaster,Steel,Stand Up,97,44,1188,4,B&M,status.closed.definitely,28.1,"
+                                  Chain lift hill
+                                                ",Shoulder harness
+maverick-cedar-point,Maverick,Cedar Point,10.0 (Superior),Intamin Launch Coaster,Steel,Sit Down,113,32,1356,2,Intamin,status.operating,98.9,"
+                                  Magnetic Launch (LIM/LSM)
+                                                ",Shoulder harness
+mind-eraser-six-flags-america,Mind Eraser,Six Flags America,5.0 (Average),Vekoma Inverted Coaster,Steel,Inverted,80,33,689,5,Vekoma,status.operating,2.9,"
+                                  Chain lift hill
+                                                ",Shoulder harness
+montu-busch-gardens-tampa,Montu,Busch Gardens Tampa,10 (Superior),B&M Inverted Coaster,Steel,Inverted,96,46,1214,7,B&M,status.operating,94,"
+                                  Chain lift hill
+                                                ",Shoulder harness
+mystery-mine-dollywood,Mystery Mine,Dollywood,9.5 (Excellent),Gerstlauer Looping Coaster,Steel,Sit Down,74,35,552,2,Gerstlauer,status.operating,69.1,"
+                                  Chain lift hill
+                                                ",Shoulder harness
+nemesis-alton-towers,Nemesis,Alton Towers,9.0 (Excellent),B&M Inverted Coaster,Steel,Inverted,81,13,716,4,B&M,status.operating,95.2,"
+                                  Chain lift hill
+                                                ",Shoulder harness
+sheikra-busch-gardens-tampa,SheiKra,Busch Gardens Tampa,7.5 (Good),B&M Dive Coaster,Steel,Floorless,113,61,972,1,B&M,status.operating,91.4,"
+                                  Chain lift hill
+                                                ",Shoulder harness
+skyrush-hersheypark,Skyrush,Hersheypark,10.0 (Superior),Intamin Hyper Coaster,Steel,Sit Down,120,60,1100,0,Intamin,status.operating,97.5,"
+                                  Cable lift hill
+                                                ",Shoulder harness
+storm-runner-hersheypark,Storm Runner,Hersheypark,8.5 (Great),Intamin Launch Coaster,Steel,Sit Down,120,56,806,3,Intamin,status.operating,91.9,"
+                                  Hydraulic cable launch
+                                                ",Shoulder harness
+superman-escape-warner-bros-movie-world,Superman Escape,Warner Bros. Movie World,8.0 (Great),Intamin Launch Coaster,Steel,Sit Down,100,40,760,0,Intamin,status.operating,82.8,"
+                                  Hydraulic cable launch
+                                                ",Shoulder harness
+superman-krypton-coaster-six-flags-fiesta-texas,Superman Krypton Coaster,Six Flags Fiesta Texas,8.5 (Great),B&M Floorless Coaster,Steel,Floorless,113,51,1227,6,B&M,status.operating,88.7,"
+                                  Chain lift hill
+                                                ",Shoulder harness
+talon-dorney-park,Talon,Dorney Park,8.5 (Great),B&M Inverted Coaster,Steel,Inverted,93,41,950,4,B&M,status.operating,87.7,"
+                                  Chain lift hill
+                                                ",Shoulder harness
+thunderbird-holiday-world,Thunderbird,Holiday World,9.0 (Excellent),B&M Launch Wing Coaster,Wooden,Sit Down,75,27,850,0,GCI,status.operating,89.3,"
+                                  Magnetic Launch (LIM/LSM)
+                                                ",Shoulder harness
+vortex-carowinds,Vortex,Carowinds,3.5 (Bad),B&M Stand-Up Coaster,Steel,Sit Down,89,45,1158,6,Arrow,status.operating,25.3,"
+                                  Chain lift hill
+                                                ",Shoulder harness

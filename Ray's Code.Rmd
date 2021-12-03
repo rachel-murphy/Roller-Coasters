@@ -7,68 +7,152 @@ output: word_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-```
-
-```{r}
-get_info <- function(ttcodes){
-  url <- array() ; a <- array()
-  
-  for (i in length(ttcodes)) {
-      url[i] <- paste("https://captaincoaster.com/en/coasters/", ttcodes[i], sep="")
-
-      a[i]<- try(read_html(url[i]) %>% html_nodes(".text-semibold.text-right") %>% html_text() %>% 
-                   parse_number(locale=locale(decimal_mark=",")), silent=TRUE)
-  }
-
-  a
-}
-
-review1 <- review1 %>% mutate(url = tolower(paste(Rollercoaster, Amusement.Park)))
-addition_url <-str_remove_all(review1$url, "[.]")
-addition_url <-str_remove_all(addition_url, "[,]")
-addition_url <-str_remove_all(addition_url, "[-]")
-addition_url <-str_replace_all(addition_url, fixed("'"), "-")
-addition_url <-str_replace_all(addition_url, fixed(" "), "-")
-addition_url <- as.array(addition_url)
-
-get_info(addition_url)
-```
-
-```{r}
-url <- NULL
-for(i in 1:3){
-  url[i] <- paste("https://captaincoaster.com/en/coasters/zadra-energylandia", i, sep="")
-
-}
-url[1] <- "https://captaincoaster.com/en/coasters/zadra-energylandia"
-
-h <- NULL
-for(i in 1:3){
-h[i]<- try(read_html(url[i]) %>% html_nodes(".col-xs-6:nth-child(1) .text-bold:nth-child(1)") %>% html_text() %>% parse_number(locale=locale(decimal_mark=",")), silent=TRUE)
-
-}
-h
+library(ggthemes)
+library(cluster)
+library(fossil)
+library(fpc)
+library(MASS)
+library(Hmisc)
+library(reshape)
+library(foreign)
+library(ggplot2)
+library(tidyverse)
+library(caret)
+library(sjmisc)
+library(magrittr)
+library(rvest)
+library(tidyverse)
+library(dplyr)
+library(tidytext)
+library(textdata)
+library(lubridate)
+library(scales)
+library(ggthemes)
+library(ggrepel)
 ```
 
 
 ```{r}
 review1<-read.csv("Roller Coaster Reviews.csv")
-review2<-read.csv("Coaster Reviews 2.csv")
 review1<-rename(review1,Rollercoaster = ï..Roller.Coaster)
-review2<-rename(review2, Rollercoaster = ï..Roller.coaster)
-#review1$Roller.coaster <- paste(review1$Rollercoaster, ",",review1$Amusement.Park)
 
-review2<-review2 %>% separate(Rollercoaster, c('Rollercoaster', 'Amusement.Park'), sep = ",")
-# merge two data frames by ID
-total <- merge(review1,review2,by="Rollercoaster")
-
-database<-read.csv("coaster_db.csv")
-anotha <- read.csv("IT Export.csv")
 anotha1 <- read.csv("roller_coasters.csv")
 anotha1 <- rename(anotha1, Rollercoaster=name)
-anotha <- rename(anotha, Rollercoaster=Coaster)
-database<- rename(database, Rollercoaster = coaster_name)
-yeet<-merge(database,total, by= "Rollercoaster")
-omg <- merge(anotha, total, by="Rollercoaster")
-hehe <- merge(database, review1, by="Rollercoaster")
 ```
+
+```{r}
+get_info <- function(ttcodes){
+  url <- NULL ; score <- NULL; name <- NULL
+  for (i in seq(ttcodes)) {
+      url[i] <- paste("https://captaincoaster.com/en/coasters/", ttcodes[i], sep="")
+      
+      score[i]<-try(read_html(url[i]) %>% html_nodes(".text-semibold.text-right") %>% html_text() %>%  
+                  parse_number(locale=locale(decimal_mark=",")), silent=TRUE)
+      
+      name[i]<- ttcodes[i]
+  }
+
+  return(data.frame(score, name, stringsAsFactors = FALSE))
+}
+
+review1 <- review1 %>% mutate(url = tolower(paste(Rollercoaster, Amusement.Park)))
+review1$url <-str_remove_all(review1$url, "[.]")
+review1$url <-str_remove_all(addition_url, "[,]")
+review1$url <-str_remove_all(addition_url, "[-]")
+review1$url <-str_replace_all(addition_url, fixed("'"), "-")
+review1$url <-str_replace_all(addition_url, fixed(":"), "")
+review1$url <-str_replace_all(addition_url, fixed(" "), "-")
+review1$url <-str_replace_all(addition_url, fixed("--"), "-")
+review1$url <-str_replace_all(addition_url, fixed("--"), "-")
+addition_url <- review1$url
+
+#blah2<-get_info(addition_url)
+
+#addition_url <- c("saw-the-ride-thorpe-park", "xflight-six-flags-great-america", "wild-eagle-dollywood")                                    
+
+blah<-get_info(addition_url[1:15])
+blah2<-get_info(addition_url[16:35])
+blah3<-get_info(addition_url[36:40])
+blah4<-get_info(addition_url[41:47])
+blah5<-get_info(addition_url[48:49])
+blah6<-get_info(addition_url[50:55])
+blah7<-get_info(addition_url[56:66])
+blah8<-get_info(addition_url[67:80])
+blah9<-get_info(addition_url[81:91])
+blah10<-get_info(addition_url[92:105])
+blah11<-get_info(addition_url[106:107])
+blah12<-get_info(addition_url[107:110])
+blah13<-get_info(addition_url[111:112])
+blah14<-get_info(addition_url[113])
+blah15<-get_info(addition_url[114:119])
+blah16<-get_info(addition_url[120:130])
+blah17<-get_info(addition_url[131:140])
+blah18<-get_info(addition_url[141:142])
+blah19<-get_info(addition_url[143:144])
+blah20<-get_info(addition_url[145:147])
+blah21<-get_info(addition_url[148:149])
+
+together<-rbind(blah,blah2)
+together<-rbind(together,blah3)
+together<-rbind(together,blah4)
+together<-rbind(together,blah5)
+together<-rbind(together,blah6)
+together<-rbind(together,blah7)
+together<-rbind(together,blah8)
+together<-rbind(together,blah9)
+together<-rbind(together,blah10)
+together<-rbind(together,blah11)
+together<-rbind(together,blah12)
+together<-rbind(together,blah13)
+together<-rbind(together,blah14)
+together<-rbind(together,blah15)
+together<-rbind(together,blah16)
+together<-rbind(together,blah17)
+together<-rbind(together,blah18)
+together<-rbind(together,blah19)
+together<-rbind(together,blah20)
+together<-rbind(together,blah21)
+
+together1$score <- as.numeric(together1$score)
+together1 <- na.omit(together1)
+new_n_improved <- together1$name
+```
+
+
+```{r}
+get_data <- function(ttcodes){
+  url <- NULL ;name <- NULL; model <- NULL; launch <- NULL; restraint <- NULL 
+  for (i in seq(ttcodes)) {
+    url[i] <- paste("https://captaincoaster.com/en/coasters/", ttcodes[i], sep="")
+    a<- read_html(url[i])
+      model[i] <- try(a %>% html_nodes(".list-group-item:nth-child(7) .pull-right") %>% html_text(), silent=TRUE)
+      launch[i] <- try(a %>% html_nodes(".list-group-item:nth-child(8) .pull-right") %>% html_text(), silent=TRUE)
+      restraint[i] <- try(a %>% html_nodes(".list-group-item:nth-child(9) .pull-right") %>% html_text(), silent=TRUE)
+      name[i]<- ttcodes[i]
+  }
+  return(data.frame(name, height, length, speed, inversions, status, type, train, model, launch, restraint, stringsAsFactors = FALSE))
+}
+
+yes[1,]<-get_data(new_n_improved[1])
+
+df <- yes[FALSE,]
+j=1
+  for (j in seq(new_n_improved)) {
+    df[j,]<-get_data(new_n_improved[j])
+  }
+```
+
+```{r}
+almost_final<-merge(together1,df, by="name")
+almost_final <- rename(almost_final,url=name)
+final <- merge(almost_final,review1, by="url")
+final <- na.omit(final)
+f<-merge(review1,anotha1, by="Rollercoaster")
+f <- rename(f,url=R)
+t<-merge(f,almost_final, by="url")
+t2 <- t[,-c(13,16:22,26)]
+t2<-na.omit(t2)
+setwd("C:/Users/murph/Documents/STAT 549/Final/Roller-Coasters/")
+write.csv(t2,"C:/Users/murph/Documents/STAT 549/Final/Roller-Coasters/FileName.csv", row.names = FALSE)
+```
+

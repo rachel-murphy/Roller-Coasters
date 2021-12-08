@@ -63,6 +63,7 @@ gather_reviews <- function(url) {
 }
 
 all_reviews <- apply(links, 1, gather_reviews) %>% as.data.frame()
+#trash
 ```
 
 

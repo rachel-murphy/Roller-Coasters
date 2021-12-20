@@ -12,27 +12,20 @@ library(cluster)
 library(fossil)
 library(fpc)
 library(MASS)
-library(Hmisc)
-library(reshape)
-library(foreign)
 library(ggplot2)
 library(tidyverse)
 library(caret)
-library(sjmisc)
-library(magrittr)
 library(rvest)
-library(tidyverse)
 library(dplyr)
 library(tidytext)
 library(textdata)
-library(lubridate)
-library(scales)
-library(ggthemes)
-library(ggrepel)
+library(MVN)
+library(heplots)
+library(Hotelling)
 ```
 
-
 ```{r}
+#read in data files
 review1<-read.csv("Roller Coaster Reviews.csv")
 review1<-rename(review1,Rollercoaster = ï..Roller.Coaster)
 
@@ -41,6 +34,7 @@ anotha1 <- rename(anotha1, Rollercoaster=name)
 ```
 
 ```{r}
+#attach scoring from online score captaincoaster
 get_info <- function(ttcodes){
   url <- NULL ; score <- NULL; name <- NULL
   for (i in seq(ttcodes)) {
@@ -55,21 +49,19 @@ get_info <- function(ttcodes){
   return(data.frame(score, name, stringsAsFactors = FALSE))
 }
 
+#clean the names of the coasters needed for scoring so it can be attached to the url in get_info
 review1 <- review1 %>% mutate(url = tolower(paste(Rollercoaster, Amusement.Park)))
 review1$url <-str_remove_all(review1$url, "[.]")
-review1$url <-str_remove_all(addition_url, "[,]")
-review1$url <-str_remove_all(addition_url, "[-]")
-review1$url <-str_replace_all(addition_url, fixed("'"), "-")
-review1$url <-str_replace_all(addition_url, fixed(":"), "")
-review1$url <-str_replace_all(addition_url, fixed(" "), "-")
-review1$url <-str_replace_all(addition_url, fixed("--"), "-")
-review1$url <-str_replace_all(addition_url, fixed("--"), "-")
+review1$url <-str_remove_all(review1$url, "[,]")
+review1$url <-str_remove_all(review1$url, "[-]")
+review1$url <-str_replace_all(review1$url, fixed("'"), "-")
+review1$url <-str_replace_all(review1$url, fixed(":"), "")
+review1$url <-str_replace_all(review1$url, fixed(" "), "-")
+review1$url <-str_replace_all(review1$url, fixed("--"), "-")
+review1$url <-str_replace_all(review1$url, fixed("--"), "-")
 addition_url <- review1$url
 
-#blah2<-get_info(addition_url)
-
-#addition_url <- c("saw-the-ride-thorpe-park", "xflight-six-flags-great-america", "wild-eagle-dollywood")                                    
-
+#r cannot service all the open source code at once so...
 blah<-get_info(addition_url[1:15])
 blah2<-get_info(addition_url[16:35])
 blah3<-get_info(addition_url[36:40])
@@ -92,6 +84,7 @@ blah19<-get_info(addition_url[143:144])
 blah20<-get_info(addition_url[145:147])
 blah21<-get_info(addition_url[148:149])
 
+#combine the data frames from the individual assessments above
 together<-rbind(blah,blah2)
 together<-rbind(together,blah3)
 together<-rbind(together,blah4)
@@ -113,13 +106,24 @@ together<-rbind(together,blah19)
 together<-rbind(together,blah20)
 together<-rbind(together,blah21)
 
+
+#this possibility was an afterthought and also seems to have a slight issue with entry 49, but works weel up to that point...
+# outline <-get_info(addition_url[1])
+# 
+# score.df <- outline[FALSE,]
+# k=1
+#   for (k in seq(addition_url)) {
+#     score.df[k,]<-get_info(addition_url[k])
+#   }
+
+#clean that data frame
 together1$score <- as.numeric(together1$score)
 together1 <- na.omit(together1)
 new_n_improved <- together1$name
 ```
 
-
 ```{r}
+#get additional information that the original data set did not have to add potential predictor variables
 get_data <- function(ttcodes){
   url <- NULL ;name <- NULL; model <- NULL; launch <- NULL; restraint <- NULL 
   for (i in seq(ttcodes)) {
@@ -143,6 +147,7 @@ j=1
 ```
 
 ```{r}
+#put togethter all the data sets and clean it
 almost_final<-merge(together1,df, by="name")
 almost_final <- rename(almost_final,url=name)
 final <- merge(almost_final,review1, by="url")
@@ -152,7 +157,137 @@ f <- rename(f,url=R)
 t<-merge(f,almost_final, by="url")
 t2 <- t[,-c(13,16:22,26)]
 t2<-na.omit(t2)
-setwd("C:/Users/murph/Documents/STAT 549/Final/Roller-Coasters/")
-write.csv(t2,"C:/Users/murph/Documents/STAT 549/Final/Roller-Coasters/FileName.csv", row.names = FALSE)
+#setwd("C:/Users/murph/Documents/STAT 549/Final/Roller-Coasters/")
+#write.csv(t2,"C:/Users/murph/Documents/STAT 549/Final/Roller-Coasters/FileName.csv", row.names = FALSE)
 ```
+
+```{r}
+#read in final data set from above
+coaster_data <- read.csv("FileName.csv")
+
+coaster_data<-coaster_data %>% separate(Rating, c("Score.2","Cat_score"), " ")
+coaster_data$Score.2 <- as.double(coaster_data$Score.2)
+```
+
+```{r}
+#clean the factors up so analysis could actually be used on additional predictor variables
+coaster_data$launch <- str_trim(coaster_data$launch)
+coaster_data_cat <- coaster_data %>% mutate(Factor.material = case_when(material_type == "Steel" ~ 0,
+                                                                     TRUE ~ 1))
+coaster_data_cat <- coaster_data_cat %>% mutate(Factor.seating = case_when(seating_type == "Sit Down" ~ 0,
+                                                                     TRUE ~ 1))
+coaster_data_cat <- coaster_data_cat %>% mutate(Factor.launch = case_when(launch == "Chain lift hill" ~ 0,
+                                                                     TRUE ~ 1))
+coaster_data_cat <- coaster_data_cat %>% mutate(Factor.restraint = case_when(restraint == "Lap bar" ~ 0,
+                                                                     restraint == "Common lap bar" ~ 0,
+                                                                     TRUE~ 1))
+coaster_data_cat <- coaster_data_cat[,c(4,9:12,15, 18:21)]
+
+coaster_data_cat$Factor.material <- as.factor(coaster_data_cat$Factor.material)
+coaster_data_cat$Factor.seating <- as.factor(coaster_data_cat$Factor.seating)
+coaster_data_cat$Factor.launch <- as.factor(coaster_data_cat$Factor.launch)
+coaster_data_cat$Factor.restraint <- as.factor(coaster_data_cat$Factor.restraint)
+
+distmatrix <- daisy(coaster_data_cat, metric="gower")
+ 
+k<-kmeans(distmatrix, centers=4, iter.max=100, nstart=25)
+```
+
+```{r, warning=FALSE, echo=FALSE}
+n <- nrow(coaster_data_cat[,1:6])
+wss <- rep(0, 10)
+wss[1] <- (n - 1) * sum(apply(coaster_data_cat[,1:6], 2,var))
+for (i in 2:10){
+  wss[i] <- sum(kmeans(coaster_data_cat[,1:6], centers = i, iter.max=100, nstart=25)$withinss)
+  plot(1:10, wss, type = "b", xlab = "Number of clusters", ylab = "Within groups sum of squares")
+}
+```
+
+
+```{r, warning=FALSE, echo=FALSE}
+n <- nrow(coaster_data_cat)
+wss <- rep(0, 10)
+wss[1] <- (n - 1) * sum(apply(coaster_data_cat, 2,var))
+for (i in 2:10){
+  wss[i] <- sum(kmeans(coaster_data_cat, centers = i, iter.max=100, nstart=25)$withinss)
+  plot(1:10, wss, type = "b", xlab = "Number of clusters", ylab = "Within groups sum of squares")
+}
+```
+
+```{r}
+ clusplot(distmatrix, k$cluster,diss = T, color=TRUE, shade=TRUE, 
+     labels=5, lines=0, col.p = "black",xlim = c(-.8,.8), main = "Three Clusters of Kmeans")
+```
+
+```{r}
+pairs(coaster_data_cat)
+
+lm(cbind(score, Score.2) ~  Factor.launch + Factor.restraint + Factor.seating + Factor.material + height.x + length.x + num_inversions + speed.x, data = coaster_data_cat)
+```
+
+```{r}
+x1 <- with(coaster_data_cat, coaster_data_cat[Factor.restraint== 0,-10])
+x2 <- with(coaster_data_cat, coaster_data_cat[Factor.restraint==1, -10])
+m1 <- round(apply(x1[,1:6], 2, mean),2)
+m2 <- round(apply(x2[,1:6], 2, mean),2)
+m1;m2
+```
+
+```{r}
+mvn(x1[,1:6], mvnTest="hz")
+mvn(x1[,1:6], mvnTest="hz")
+```
+
+```{r}
+out <- boxplot.stats(x1$height.x)$out
+out_ind <- which(x1$height.x %in% c(out))
+out_ind
+
+x1[out_ind, ]
+
+out <- boxplot.stats(x1$num_inversions)$out
+out_ind <- which(x1$num_inversions %in% c(out))
+out_ind
+
+x1[out_ind, ]
+```
+
+```{r}
+out <- boxplot.stats(x2$height.x)$out
+out_ind <- which(x2$height.x %in% c(out))
+out_ind
+
+x2[out_ind, ]
+
+out <- boxplot.stats(x2$num_inversions)$out
+out_ind <- which(x2$num_inversions %in% c(out))
+out_ind
+
+x2[out_ind, ]
+```
+
+```{r}
+coaster_data_cts <- coaster_data[,c(1:6,10)]
+boxM(coaster_data_cts[,-7], coaster_data_cts[,7])
+```
+
+```{r}
+fit <- hotelling.test(x1[,1:6],x2[,1:6])
+fit
+```
+
+
+```{r}
+t.test(x1$speed.x, x2$speed.x)
+t.test(x1$height.x, x2$height.x)
+t.test(x1$num_inversions, x2$num_inversions)
+t.test(x1$length.x, x2$length.x)
+t.test(x1$score, x2$score)
+t.test(x1$Score.2, x2$Score.2)
+```
+
+```{r}
+ggplot(coaster_data_cat, aes(Factor.restraint)) + geom_bar()
+```
+
 

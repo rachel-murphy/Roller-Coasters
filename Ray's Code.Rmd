@@ -24,7 +24,7 @@ library(heplots)
 library(Hotelling)
 ```
 
-```{r}
+```{r, warning=FALSE, echo=FALSE}
 #read in data files
 review1<-read.csv("Roller Coaster Reviews.csv")
 review1<-rename(review1,Rollercoaster = ï..Roller.Coaster)
@@ -33,7 +33,7 @@ anotha1 <- read.csv("roller_coasters.csv")
 anotha1 <- rename(anotha1, Rollercoaster=name)
 ```
 
-```{r}
+```{r, warning=FALSE, echo=FALSE}
 #attach scoring from online score captaincoaster
 get_info <- function(ttcodes){
   url <- NULL ; score <- NULL; name <- NULL
@@ -122,7 +122,7 @@ together1 <- na.omit(together1)
 new_n_improved <- together1$name
 ```
 
-```{r}
+```{r, warning=FALSE, echo=FALSE}
 #get additional information that the original data set did not have to add potential predictor variables
 get_data <- function(ttcodes){
   url <- NULL ;name <- NULL; model <- NULL; launch <- NULL; restraint <- NULL 
@@ -146,7 +146,7 @@ j=1
   }
 ```
 
-```{r}
+```{r, warning=FALSE, echo=FALSE}
 #put togethter all the data sets and clean it
 almost_final<-merge(together1,df, by="name")
 almost_final <- rename(almost_final,url=name)
@@ -161,7 +161,7 @@ t2<-na.omit(t2)
 #write.csv(t2,"C:/Users/murph/Documents/STAT 549/Final/Roller-Coasters/FileName.csv", row.names = FALSE)
 ```
 
-```{r}
+```{r, warning=FALSE, echo=FALSE}
 #read in final data set from above
 coaster_data <- read.csv("FileName.csv")
 
@@ -169,7 +169,7 @@ coaster_data<-coaster_data %>% separate(Rating, c("Score.2","Cat_score"), " ")
 coaster_data$Score.2 <- as.double(coaster_data$Score.2)
 ```
 
-```{r}
+```{r, warning=FALSE, echo=FALSE}
 #clean the factors up so analysis could actually be used on additional predictor variables
 coaster_data$launch <- str_trim(coaster_data$launch)
 coaster_data_cat <- coaster_data %>% mutate(Factor.material = case_when(material_type == "Steel" ~ 0,
@@ -191,6 +191,16 @@ coaster_data_cat$Factor.restraint <- as.factor(coaster_data_cat$Factor.restraint
 distmatrix <- daisy(coaster_data_cat, metric="gower")
  
 k<-kmeans(distmatrix, centers=4, iter.max=100, nstart=25)
+cor(coaster_data_cat[,1:6])
+
+```
+
+```{r}
+# Principal Components Analysis of the State data:
+state.pc <- princomp(coaster_data_cat[,2:5], cor=T)
+
+# Showing the coefficients of the components:
+summary(state.pc,loadings=T)
 ```
 
 ```{r, warning=FALSE, echo=FALSE}
@@ -214,18 +224,18 @@ for (i in 2:10){
 }
 ```
 
-```{r}
+```{r, warning=FALSE, echo=FALSE}
  clusplot(distmatrix, k$cluster,diss = T, color=TRUE, shade=TRUE, 
      labels=5, lines=0, col.p = "black",xlim = c(-.8,.8), main = "Three Clusters of Kmeans")
 ```
 
-```{r}
+```{r, warning=FALSE, echo=FALSE}
 pairs(coaster_data_cat)
 
 lm(cbind(score, Score.2) ~  Factor.launch + Factor.restraint + Factor.seating + Factor.material + height.x + length.x + num_inversions + speed.x, data = coaster_data_cat)
 ```
 
-```{r}
+```{r, warning=FALSE, echo=FALSE}
 x1 <- with(coaster_data_cat, coaster_data_cat[Factor.restraint== 0,-10])
 x2 <- with(coaster_data_cat, coaster_data_cat[Factor.restraint==1, -10])
 m1 <- round(apply(x1[,1:6], 2, mean),2)
@@ -233,12 +243,12 @@ m2 <- round(apply(x2[,1:6], 2, mean),2)
 m1;m2
 ```
 
-```{r}
+```{r, warning=FALSE, echo=FALSE}
 mvn(x1[,1:6], mvnTest="hz")
 mvn(x1[,1:6], mvnTest="hz")
 ```
 
-```{r}
+```{r, warning=FALSE, echo=FALSE}
 out <- boxplot.stats(x1$height.x)$out
 out_ind <- which(x1$height.x %in% c(out))
 out_ind
@@ -252,7 +262,7 @@ out_ind
 x1[out_ind, ]
 ```
 
-```{r}
+```{r, warning=FALSE, echo=FALSE}
 out <- boxplot.stats(x2$height.x)$out
 out_ind <- which(x2$height.x %in% c(out))
 out_ind
@@ -266,18 +276,18 @@ out_ind
 x2[out_ind, ]
 ```
 
-```{r}
+```{r, warning=FALSE, echo=FALSE}
 coaster_data_cts <- coaster_data[,c(1:6,10)]
 boxM(coaster_data_cts[,-7], coaster_data_cts[,7])
 ```
 
-```{r}
+```{r, warning=FALSE, echo=FALSE}
 fit <- hotelling.test(x1[,1:6],x2[,1:6])
 fit
 ```
 
 
-```{r}
+```{r, warning=FALSE, echo=FALSE}
 t.test(x1$speed.x, x2$speed.x)
 t.test(x1$height.x, x2$height.x)
 t.test(x1$num_inversions, x2$num_inversions)
@@ -286,7 +296,7 @@ t.test(x1$score, x2$score)
 t.test(x1$Score.2, x2$Score.2)
 ```
 
-```{r}
+```{r, warning=FALSE, echo=FALSE}
 ggplot(coaster_data_cat, aes(Factor.restraint)) + geom_bar()
 ```
 

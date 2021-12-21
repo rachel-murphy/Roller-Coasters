@@ -94,14 +94,41 @@ biggg <- ggpairs(coaster_data[,c(15,4,9,10,11,12)])
 #biggg
 ```
 
+
 ```{r}
+coaster_data_cat <- coaster_data %>% mutate(Factor.material = case_when(material_type == "Steel" ~ 0,
+                                                                     TRUE ~ 1))
+coaster_data_cat <- coaster_data_cat %>% mutate(Factor.seating = case_when(seating_type == "Sit Down" ~ 0,
+                                                                     TRUE ~ 1))
+coaster_data_cat <- coaster_data_cat %>% mutate(Factor.launch = case_when(launch == "Chain lift hill" ~ 0,
+                                                                     TRUE ~ 1))
+coaster_data_cat <- coaster_data_cat %>% mutate(Factor.restraint = case_when(restraint == "Lap bar" ~ 0,
+                                                                     restraint == "Common lap bar" ~ 0,
+                                                                     TRUE~ 1))
+coaster_data_cat <- coaster_data_cat[,c(4,9:12,15, 18:21)]
+
+# coaster_data_cat$Factor.material <- as.factor(coaster_data_cat$Factor.material)
+# coaster_data_cat$Factor.seating <- as.factor(coaster_data_cat$Factor.seating)
+# coaster_data_cat$Factor.launch <- as.factor(coaster_data_cat$Factor.launch)
+# coaster_data_cat$Factor.restraint <- as.factor(coaster_data_cat$Factor.restraint)
+
+#coaster_data_cat[,1:6] <- scale(coaster_data_cat[,1:6])
+```
+
+
+```{r}
+coaster_data$launch <- str_trim(coaster_data$launch)
 #kmeans clustering
-coasters_scaled <- scale(coaster_data[,c(4,9,10,11,12,15)])
 coasters.k2 <- kmeans(coasters_scaled, centers=2, iter.max = 200, nstart = 50)
 coasters.k2  #32.9%
 
+<<<<<<< HEAD
 coasters.k3 <- kmeans(coasters_scaled, centers=3, iter.max = 200, nstart = 50)
 coasters.k3  #46.9% this
+=======
+coasters.k3 <- kmeans(scale(coaster_data_cat[,1:6]), centers=3, iter.max = 200, nstart = 50)
+coasters.k3  #46.9%
+>>>>>>> 1a8ab20f8ec8ae1c015d911619547fe09976022c
 
 coasters.k4 <- kmeans(coasters_scaled, centers=4, iter.max = 200, nstart = 50)
 coasters.k4  #56.1
@@ -116,16 +143,87 @@ coasters.k4  #56.1
 # coasters.k7  #75.1%
 
 clusplot(coasters_scaled, coasters.k2$cluster, color=TRUE, shade=TRUE, lines=0)
+<<<<<<< HEAD
 clusplot(coasters_scaled, coasters.k3$cluster, color=TRUE, shade=TRUE, lines=0)
 # clusplot(coasters_scaled, coasters.k4$cluster, color=TRUE, shade=TRUE, lines=0)
 # clusplot(coasters_scaled, coasters.k5$cluster, color=TRUE, shade=TRUE, labels=2, lines=0)
 # clusplot(coasters_scaled, coasters.k6$cluster, color=TRUE, shade=TRUE, labels=2, lines=0)
 # clusplot(coasters_scaled, coasters.k7$cluster, color=TRUE, shade=TRUE, labels=2, lines=0)
+=======
+clusplot(coaster_data_cat[,1:6], coasters.k3$cluster, color=TRUE, shade=TRUE, lines=0)
+clusplot(coasters_scaled, coasters.k4$cluster, color=TRUE, shade=TRUE, lines=0)
+clusplot(coasters_scaled, coasters.k5$cluster, color=TRUE, shade=TRUE, labels=2, lines=0)
+clusplot(coasters_scaled, coasters.k6$cluster, color=TRUE, shade=TRUE, labels=2, lines=0)
+clusplot(coasters_scaled, coasters.k7$cluster, color=TRUE, shade=TRUE, labels=2, lines=0)
+>>>>>>> 1a8ab20f8ec8ae1c015d911619547fe09976022c
 
 plotcluster(coasters_scaled, coasters.k7$cluster)
 ```
 
 ```{r}
+# samples within cluster 1
+c1 <-coaster_data_cat[which(coasters.k3$cluster == 1),]
+c1 <- c1 %>% mutate(cluster =1)
+# samples within cluster 2
+c2 <-coaster_data_cat[which(coasters.k3$cluster == 2),]
+c2 <- c2 %>% mutate(cluster =2)
+#samples within cluster 3
+c3 <-coaster_data_cat[which(coasters.k3$cluster == 3),]
+c3 <- c3 %>% mutate(cluster =3)
+```
 
+```{r}
+c12 <- rbind(c1, c2)
+c123 <- rbind(c12,c3)
+```
+
+```{r}
+x1 <- with(c123, c123[cluster== 1,-11])
+x2 <- with(c123, c123[cluster==2, -11])
+x3 <- with(c123, c123[cluster==3, -11])
+m1 <- round(apply(x1, 2, mean),2)
+m2 <- round(apply(x2, 2, mean),2)
+m3 <- round(apply(x3, 2, mean),2)
+meh<-rbind(m1,m2)
+meh <- rbind(meh,m3)
+meh <- as.data.frame(meh)
+meh <- rename(meh, Speed = speed.x)
+meh <- rename(meh, Height = height.x)
+meh <- rename(meh, Length = length.x)
+meh <- rename(meh, Inversions = num_inversions)
+meh <- rename(meh, Score.1 = score)
+meh <- rename(meh, Material = Factor.material)
+meh <- rename(meh, Seating = Factor.seating)
+meh <- rename(meh, Launch = Factor.launch)
+meh <- rename(meh, Restraint = Factor.restraint)
+row.names(meh) <- c("Cluster 1 Means", "Cluster 2 Means", "Cluster 3 Means")
+meh<-meh[,c(2,3,4,5,6,1,7,8,9,10)]
+formattable::formattable(meh)
+```
+
+```{r}
+m1 <- round(apply(x1, 2, sd),2)
+m2 <- round(apply(x2, 2, sd),2)
+m3 <- round(apply(x3, 2, sd),2)
+meh<-rbind(m1,m2)
+meh <- rbind(meh,m3)
+meh <- as.data.frame(meh)
+meh <- rename(meh, Speed = speed.x)
+meh <- rename(meh, Height = height.x)
+meh <- rename(meh, Length = length.x)
+meh <- rename(meh, Inversions = num_inversions)
+meh <- rename(meh, Score.1 = score)
+meh <- rename(meh, Material = Factor.material)
+meh <- rename(meh, Seating = Factor.seating)
+meh <- rename(meh, Launch = Factor.launch)
+meh <- rename(meh, Restraint = Factor.restraint)
+row.names(meh) <- c("Cluster 1 SD", "Cluster 2 SD", "Cluster 3 SD")
+meh<-meh[,c(2,3,4,5,6,1,7,8,9,10)]
+formattable::formattable(meh)
+```
+
+
+```{r}
+ clusplot(coaster_data_cat[,1:6], coasters.k3$cluster, color=TRUE, shade=TRUE, labels=5, lines=0, col.clus = c("dark red", "dark blue", "dark green"), col.p = "black", main = "Three Clusters of Kmeans")
 ```
 

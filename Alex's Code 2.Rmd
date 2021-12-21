@@ -27,6 +27,8 @@ order <- c("2.0 (Horrible)", "3.0 (Bad)", "3.5 (Bad)", "4.0 (Below Average)", "5
 
 coaster_data$Rating <- factor(coaster_data$Rating, levels = order)
 
+coaster_data<-coaster_data %>% separate(Rating, c("Score.2","Cat_score"), " ")
+coaster_data$Score.2 <- as.double(coaster_data$Score.2)
 ```
 
 
@@ -53,7 +55,16 @@ biggg <- ggpairs(coaster_data[,c(8,9,10,11,14)])
 
 ```{r}
 #kmeans clustering
-coasters_scaled <- scale(coaster_data[,c(8,9,10,11,14)])
+coasters_scaled <- scale(coaster_data[,c(4,9,10,11,12,15)])
+coasters.k2 <- kmeans(coasters_scaled, centers=2, iter.max = 200, nstart = 50)
+coasters.k2  
+
+coasters.k3 <- kmeans(coasters_scaled, centers=3, iter.max = 200, nstart = 50)
+coasters.k3  #46.9%
+
+coasters.k4 <- kmeans(coasters_scaled, centers=4, iter.max = 200, nstart = 50)
+coasters.k4  #56.1
+
 coasters.k5 <- kmeans(coasters_scaled, centers=5, iter.max = 200, nstart = 50)
 coasters.k5  #65.3%
 
@@ -63,11 +74,17 @@ coasters.k6  #70.9%
 coasters.k7 <- kmeans(coasters_scaled, centers=7, iter.max = 200, nstart = 50)
 coasters.k7  #75.1%
 
-#clusplot(coasters_scaled, coasters.k5$cluster, color=TRUE, shade=TRUE, labels=2, lines=0)
-#clusplot(coasters_scaled, coasters.k6$cluster, color=TRUE, shade=TRUE, labels=2, lines=0)
+clusplot(coasters_scaled, coasters.k2$cluster, color=TRUE, shade=TRUE, lines=0)
+clusplot(coasters_scaled, coasters.k3$cluster, color=TRUE, shade=TRUE, lines=0)
+clusplot(coasters_scaled, coasters.k4$cluster, color=TRUE, shade=TRUE, lines=0)
+clusplot(coasters_scaled, coasters.k5$cluster, color=TRUE, shade=TRUE, labels=2, lines=0)
+clusplot(coasters_scaled, coasters.k6$cluster, color=TRUE, shade=TRUE, labels=2, lines=0)
 clusplot(coasters_scaled, coasters.k7$cluster, color=TRUE, shade=TRUE, labels=2, lines=0)
 
 plotcluster(coasters_scaled, coasters.k7$cluster)
 ```
 
+```{r}
+
+```
 

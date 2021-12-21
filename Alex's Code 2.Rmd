@@ -21,35 +21,76 @@ library(cluster)
 ```{r}
 coaster_data <- read.csv("FileName.csv")
 #Reorder Rating variable
-coaster_data <- coaster_data %>% mutate(Rating = recode_factor(Rating, '10 (Superior)'="10.0 (Superior)"))
+#coaster_data <- coaster_data %>% mutate(Rating = recode_factor(Rating, '10 (Superior)'="10.0 (Superior)"))
 
-order <- c("2.0 (Horrible)", "3.0 (Bad)", "3.5 (Bad)", "4.0 (Below Average)", "5.0 (Average)", "5.5 (Average)", "6.0 (Above Average)", "6.5 (Above Average)", "7.0 (Good)", "7.5 (Good)", "8.0 (Great)", "8.5 (Great)", "9.0 (Excellent)", "9.5 (Excellent)", "10.0 (Superior)")
+#order <- c("2.0 (Horrible)", "3.0 (Bad)", "3.5 (Bad)", "4.0 (Below Average)", "5.0 (Average)", "5.5 (Average)", "6.0 (Above Average)", "6.5 (Above Average)", "7.0 (Good)", "7.5 (Good)", "8.0 (Great)", "8.5 (Great)", "9.0 (Excellent)", "9.5 (Excellent)", "10.0 (Superior)")
 
-coaster_data$Rating <- factor(coaster_data$Rating, levels = order)
+#coaster_data$Rating <- factor(coaster_data$Rating, levels = order)
 
 coaster_data<-coaster_data %>% separate(Rating, c("Score.2","Cat_score"), " ")
 coaster_data$Score.2 <- as.double(coaster_data$Score.2)
+
+#clean the factors up so analysis could actually be used on additional predictor variables
+coaster_data$launch <- str_trim(coaster_data$launch)
+coaster_data_cat <- coaster_data %>% mutate(Factor.material = case_when(material_type == "Steel" ~ 0,
+                                                                     TRUE ~ 1))
+coaster_data_cat <- coaster_data_cat %>% mutate(Factor.seating = case_when(seating_type == "Sit Down" ~ 0,
+                                                                     TRUE ~ 1))
+coaster_data_cat <- coaster_data_cat %>% mutate(Factor.launch = case_when(launch == "Chain lift hill" ~ 0,
+                                                                     TRUE ~ 1))
+coaster_data_cat <- coaster_data_cat %>% mutate(Factor.restraint = case_when(restraint == "Lap bar" ~ 0,
+                                                                     restraint == "Common lap bar" ~ 0,
+                                                                     TRUE~ 1))
+coaster_data_cat <- coaster_data_cat[,c(4,9:12,15, 18:21)]
+
+coaster_data_cat$Factor.material <- as.factor(coaster_data_cat$Factor.material)
+coaster_data_cat$Factor.seating <- as.factor(coaster_data_cat$Factor.seating)
+coaster_data_cat$Factor.launch <- as.factor(coaster_data_cat$Factor.launch)
+coaster_data_cat$Factor.restraint <- as.factor(coaster_data_cat$Factor.restraint)
+
+#new column of Score2 as a factor variable... for graphing reasons
+coaster_data <- cbind(coaster_data, (coaster_data[,4])) 
+colnames(coaster_data)[colnames(coaster_data)=="(coaster_data[, 4])"] <- "Score.2_F"
+coaster_data[,18] <- as.factor(coaster_data[,18])
+
+#new variable for Score2 0 if < 7, 1 if > 7
+# heart_data <- cbind(heart_data, (heart_data[,14])) #duplicate num
+# colnames(heart_data)[colnames(heart_data) == "(heart_data[, 14])"] <- "num_bin" # Rename
+# heart_data$num_bin[heart_data$num_bin > 0] <- 1   #added binary num variable (1 = heart disease, 0 = not)
+# heart_data[,15] <- as.factor(heart_data[,15])
+
+coaster_data <- cbind(coaster_data, (coaster_data[,4]))
+colnames(coaster_data)[colnames(coaster_data)=="(coaster_data[, 4])"] <- "Score.2_Bin"
+#coaster_data[,19] <- as.numeric(coaster_data[,19])
+coaster_data$Score.2_Bin[coaster_data$Score.2_Bin < 7] <- 0 #not good coaster
+coaster_data$Score.2_Bin[coaster_data$Score.2_Bin >= 7] <- 1 #good coaster
+coaster_data[,19] <- as.factor(coaster_data[,19])
+#ifelse(coaster_data[,19]= "0", coaster_data[,19]= "Bad", coaster_data[,19]= "Good")
+
 ```
 
 
 ```{r}
 # data exploration
-pairs <- pairs(coaster_data[,c(5,6,7,8,9,10,11,14)])
-#pairs
+pairs <- pairs(coaster_data[,c(4,7,8,9,10,11,12,15,17)])
+pairs
 
-corr_matrix <- model.matrix(~0+., data=coaster_data[,c(14,8,9,10,11)]) %>% 
+corr_matrix <- model.matrix(~0+., data=coaster_data[,c(4,9,10,11,12,15)]) %>% 
   cor(use="pairwise.complete.obs") %>% 
-  ggcorrplot(show.diag = F, type="lower", lab=TRUE, lab_size=2, title = "Correlation Matrix")
-#corr_matrix
+  ggcorrplot(show.diag = F, type="lower", lab=TRUE, lab_size=2, title = "Correlation Matrix", ggtheme = ggplot2::theme_gray, hc.order=TRUE, method = "circle", outline.color = "white", colors = c("#95E03D", "white", "#AB00FF")) + scale_x_discrete(labels=c("speed.x"="Speed", "height.x"="Height", "length.x"="Length", "score"="Score 1", "Score.2"="Score 2")) + scale_y_discrete(labels=c("speed.x"="Speed", "length.x"="Length", "num_inversions"="Number of \n Inversions", "score"="Score 1", "Score.2"="Score 2"))
+
+corr_matrix
 
 #the plot zone
-ggplot( data= coaster_data, aes(x=height.x, y=speed.x, color=Rating)) + geom_point()
-ggplot( data= coaster_data, aes(x=length.x, y=speed.x, color=Rating)) + geom_point()
+ggplot( data= coaster_data, aes(x=height.x, y=speed.x, color=Score.2_F)) + geom_point(aes(shape=Score.2_Bin)) + labs(y="Speed", x="Height", col="Rating", shape="") + scale_shape_manual(values = c(1,19)) 
+
+ggplot( data= coaster_data, aes(x=length.x, y=speed.x, color=Score.2)) + geom_point() + labs(y="Speed", x="Length") #figure out how to mark scores > 7 different from < 7
+ggplot( data= coaster_data, aes(x=length.x, y=speed.x, color=score)) + geom_point() + labs(y="Speed", x="Length")
 ggplot( data= coaster_data, aes(x=num_inversions, y=speed.x, color=score)) + geom_point()
 ggplot( data= coaster_data, aes(x=score, y=speed.x, color=material_type)) + geom_point()
 ggplot( data= coaster_data, aes(x=height.x, y=speed.x, color=num_inversions)) + geom_point()
 
-biggg <- ggpairs(coaster_data[,c(8,9,10,11,14)])
+biggg <- ggpairs(coaster_data[,c(15,4,9,10,11,12)])
 #biggg
 ```
 
@@ -57,29 +98,29 @@ biggg <- ggpairs(coaster_data[,c(8,9,10,11,14)])
 #kmeans clustering
 coasters_scaled <- scale(coaster_data[,c(4,9,10,11,12,15)])
 coasters.k2 <- kmeans(coasters_scaled, centers=2, iter.max = 200, nstart = 50)
-coasters.k2  
+coasters.k2  #32.9%
 
 coasters.k3 <- kmeans(coasters_scaled, centers=3, iter.max = 200, nstart = 50)
-coasters.k3  #46.9%
+coasters.k3  #46.9% this
 
 coasters.k4 <- kmeans(coasters_scaled, centers=4, iter.max = 200, nstart = 50)
 coasters.k4  #56.1
 
-coasters.k5 <- kmeans(coasters_scaled, centers=5, iter.max = 200, nstart = 50)
-coasters.k5  #65.3%
-
-coasters.k6 <- kmeans(coasters_scaled, centers=6, iter.max = 200, nstart = 50)
-coasters.k6  #70.9%
-
-coasters.k7 <- kmeans(coasters_scaled, centers=7, iter.max = 200, nstart = 50)
-coasters.k7  #75.1%
+# coasters.k5 <- kmeans(coasters_scaled, centers=5, iter.max = 200, nstart = 50)
+# coasters.k5  #65.3%
+# 
+# coasters.k6 <- kmeans(coasters_scaled, centers=6, iter.max = 200, nstart = 50)
+# coasters.k6  #70.9%
+# 
+# coasters.k7 <- kmeans(coasters_scaled, centers=7, iter.max = 200, nstart = 50)
+# coasters.k7  #75.1%
 
 clusplot(coasters_scaled, coasters.k2$cluster, color=TRUE, shade=TRUE, lines=0)
 clusplot(coasters_scaled, coasters.k3$cluster, color=TRUE, shade=TRUE, lines=0)
-clusplot(coasters_scaled, coasters.k4$cluster, color=TRUE, shade=TRUE, lines=0)
-clusplot(coasters_scaled, coasters.k5$cluster, color=TRUE, shade=TRUE, labels=2, lines=0)
-clusplot(coasters_scaled, coasters.k6$cluster, color=TRUE, shade=TRUE, labels=2, lines=0)
-clusplot(coasters_scaled, coasters.k7$cluster, color=TRUE, shade=TRUE, labels=2, lines=0)
+# clusplot(coasters_scaled, coasters.k4$cluster, color=TRUE, shade=TRUE, lines=0)
+# clusplot(coasters_scaled, coasters.k5$cluster, color=TRUE, shade=TRUE, labels=2, lines=0)
+# clusplot(coasters_scaled, coasters.k6$cluster, color=TRUE, shade=TRUE, labels=2, lines=0)
+# clusplot(coasters_scaled, coasters.k7$cluster, color=TRUE, shade=TRUE, labels=2, lines=0)
 
 plotcluster(coasters_scaled, coasters.k7$cluster)
 ```

@@ -1,0 +1,63 @@
+---
+title: "Abby's Code"
+author: "Abby Runge"
+date: "12/20/2021"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+pairs(coaster_data_cat)
+
+lm(cbind(score, Score.2) ~  Factor.launch + Factor.restraint + Factor.seating + Factor.material + height.x + length.x + num_inversions + speed.x, data = coaster_data_cat)
+```
+
+There are a couple of different ways to go about dimension reduction. The classical ways of doing model selection would include forwards or backwards selection. Under forward selection, the first step would be to create a model with all coefficients equal to 0 -- also called a "null" model. Then the $x_j$ variable that is most correlated with $y$ would be added to the model, and the residuals calculated. This would continue until all the variables are in the model. Backwards selection works very similarly, except starting with a full model rather than a null model. Then the $x_j$ variable that is least correlated with $y$ would be dropped from the model, continuing on until no variables are left. These two methods can be used to implement a "best" or "all" subsets approach. In this approach, all possible susbsets of the predictor variables are evaluated under some selection criterion, such as p-value, Akaike information criterion (AIC), or predicted residual error sum of squares (PRESS). Then, the subset with the best model based on this criterion is chosen as the model. 
+
+Unfortunately, these classical ways of selecting models have some issues. Number one, they can be heavily influenced by how many variables are possible to be included in the model. Too many variables and the selected model is quite likely to include predictors that are not actually valuable or relevant to the modeling. Secondly, several studies have shown that using stepwise selection yields $R^2$ variables that are badly biased high, meaning that they are claiming to account for more variablility in the data than they actually are. There have also been problems with F- and $\chi^2$- statistics, where they have been found to not actually follow the distributions they claim to follow. Along those same lines, the resulting confidence intervals have also been found to be too narrow, or more narrow than they should be. These are just some of the numerous issues that have been found and documented about the stepwise selection process. 
+
+Thankfully, there are several other options that tend to fare better and perform more reliably. Two such options are ridge regression and lasso regression.
+
+```{r}
+mlm1 <- lm(cbind(score, Score.2) ~  Factor.launch + Factor.restraint + Factor.seating + Factor.material + height.x + length.x + num_inversions + speed.x, data = coaster_data_cat) # make the model
+summary(mlm1)
+```
+
+```{r}
+m1 <- lm(score ~ Factor.launch + Factor.restraint + Factor.seating + Factor.material + height.x + length.x + num_inversions + speed.x, data = coaster_data_cat)
+summary(m1)
+
+m2 <- lm(Score.2 ~ Factor.launch + Factor.restraint + Factor.seating + Factor.material + height.x + length.x + num_inversions + speed.x, data = coaster_data_cat)
+summary(m2)
+```
+
+```{r}
+par(mfrow=c(2,2)) # Change the panel layout to 2 x 2
+plot(m1)
+par(mfrow=c(1,1)) # Change back
+```
+```{r}
+par(mfrow=c(2,2)) # Change the panel layout to 2 x 2
+plot(m2)
+par(mfrow=c(1,1)) # Change back
+```
+
+```{r}
+resid(mlm1) #model residuals
+fitted(mlm1) #model fitted values
+coef(mlm1) #model coefficients
+sigma(mlm1) #model residual standard error
+```
+
+```{r}
+round(vcov(mlm1),2)
+```
+
+```{r}
+library(car)
+Anova(ols) # check to see which, if any, variables have high p-values
+```
+

@@ -188,9 +188,11 @@ coaster_data_cat$Factor.seating <- as.factor(coaster_data_cat$Factor.seating)
 coaster_data_cat$Factor.launch <- as.factor(coaster_data_cat$Factor.launch)
 coaster_data_cat$Factor.restraint <- as.factor(coaster_data_cat$Factor.restraint)
 
+coaster_data_cat[,1:6] <- scale(coaster_data_cat[,1:6])
+
 distmatrix <- daisy(coaster_data_cat, metric="gower")
  
-k<-kmeans(distmatrix, centers=4, iter.max=100, nstart=25)
+k<-kmeans(coaster_data_cat, centers=4, iter.max=200, nstart=50)
 cor(coaster_data_cat[,1:6])
 
 ```
@@ -204,12 +206,12 @@ summary(state.pc,loadings=T)
 ```
 
 ```{r, warning=FALSE, echo=FALSE}
-n <- nrow(coaster_data_cat[,1:6])
-wss <- rep(0, 10)
-wss[1] <- (n - 1) * sum(apply(coaster_data_cat[,1:6], 2,var))
-for (i in 2:10){
-  wss[i] <- sum(kmeans(coaster_data_cat[,1:6], centers = i, iter.max=100, nstart=25)$withinss)
-  plot(1:10, wss, type = "b", xlab = "Number of clusters", ylab = "Within groups sum of squares")
+n <- nrow(scale(coaster_data_cat))
+wss <- rep(0, 20)
+wss[1] <- (n - 1) * sum(apply(scale(coaster_data_cat), 2,var))
+for (i in 2:20){
+  wss[i] <- sum(kmeans(scale(coaster_data_cat[,1:6]), centers = i, iter.max=100, nstart=25)$withinss)
+  plot(1:20, wss, type = "b", xlab = "Number of clusters", ylab = "Within groups sum of squares")
 }
 ```
 
@@ -225,14 +227,14 @@ for (i in 2:10){
 ```
 
 ```{r, warning=FALSE, echo=FALSE}
- clusplot(distmatrix, k$cluster,diss = T, color=TRUE, shade=TRUE, 
-     labels=5, lines=0, col.p = "black",xlim = c(-.8,.8), main = "Three Clusters of Kmeans")
+ clusplot(coaster_data_cat, k$cluster, color=TRUE, shade=TRUE, 
+     labels=5, lines=0, col.p = "black", main = "Three Clusters of Kmeans")
 ```
 
 ```{r, warning=FALSE, echo=FALSE}
 pairs(coaster_data_cat)
 
-lm(cbind(score, Score.2) ~  Factor.launch + Factor.restraint + Factor.seating + Factor.material + height.x + length.x + num_inversions + speed.x, data = coaster_data_cat)
+lm(cbind(score, Score.2) ~  Factor.launch+ Factor.restraint + Factor.seating + Factor.material + length.x + num_inversions + speed.x, data = coaster_data_cat)
 ```
 
 ```{r, warning=FALSE, echo=FALSE}

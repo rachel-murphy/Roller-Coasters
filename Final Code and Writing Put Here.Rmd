@@ -322,7 +322,6 @@ par(mfrow=c(1,1)) # Change back
 In this case, no red flags have been raised after looking at these graphs so the diagnostics for these models are assumed to be met. Now the model building process may proceed into testing predictors for model inclusion phase. 
 
 ```{r} 
-#prints a lot
 resid(coaster.model) #model residuals
 fitted(coaster.model) #model fitted values
 coef(coaster.model) #model coefficients
@@ -330,7 +329,7 @@ sigma(coaster.model) #model residual standard error
 ```
 
 ```{r}
-round(vcov(coaster.model),2) #prints a lot
+round(vcov(coaster.model),2)
 ```
 The first step in testing predictors for model inclusion is to look at the full model summary and determine which variables are contributing the most and which are contributing the least to prediction. One of the easier ways to do this is using the anova() function from the “car” package. This function’s default options are for a Type II MANOVA test, which tests each predictor assuming all other predictors are already in the model and using the Pillai test statistic. This MANOVA test showed that Factor.launch and speed are contributing the most to model prediction, so a model was then fit with just those predictors. This model was tested against the full model using the anova() function. The ANOVA (Analysis of Variance) test resulted in a p-value of 0.8119. Since the p-value is greater than the alpha 0.05, there is an assumption that the model with only Factor.launch and speed as predictors fits as well as the full model.
 

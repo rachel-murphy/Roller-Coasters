@@ -1,0 +1,421 @@
+---
+title: "Final Code/Writing Put Here"
+author: "Ray Murphy"
+date: "12/21/2021"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, include=FALSE)
+library(caret)
+library(car)
+library(ggplot2)
+library(ggcorrplot)
+library(tidyverse)
+library(GGally)
+library(dplyr)
+library(fpc)
+library(cluster)
+library(gridExtra)
+```
+
+INTRODUCTION 
+
+Building a roller coaster entails an enormous amount of time, money, and effort. The average cost to build a roller coaster in the United States is approximately $8 million dollars (Ohio University, 2020). Amusement parks go through the hassle of installing new rollercoasters in hopes of bringing in more people and increasing revenue to the overall park. That is, if the new rollercoaster brings any new attention to the park. The idea is to build a roller coaster that will not only draw in the crowds because of its newness, but also to draw back the initial parties and their friends. The experience of the riders is just as important as the physics behind the roller coaster. So, to better equip the ride before installation, a prediction model will be made to create an idea how the roller coaster will be perceived by the public. The variables used in this model will be height, length, and speed of the roller coaster along with number of inversions within the ride. Additionally, type of material, seating, launch, and restraint will be analyzed. The two response variables in this case will be ratings of critics from two different websites. Multiple regression model will then assign a prediction rating for each rollercoaster given and then a binary will be formed based on that prediction number. In terms of the ratings given from the two websites, 7 or 70 will be the cutoff for the indication that the rollercoaster will be perceived well by the general public or not.  
+
+DATA CLEANING
+
+Ratings of the rides from Coaster Critic (Score.2) were used as the baseline for the observations in this analysis, that is if Coaster Critic had yet to rate the coaster, then the coaster was not used for the analysis. The table of ratings from Coaster Crtic was then merged with the roller_coasters data. Ratings were simplified to just the numbers rather than the additional descriptors (Excellent, Good, Bad) added onto the end. These were used to determine the cutoff point for the binary variable made later, where 7 (“Good”) and above were deemed as well received by the public. To make sure the analysis was not merely based on an opinion of one person, Captain Coaster was brought into play, as the overall score is based on multiple reviews from avid coaster fanatics. Selector Gadget was used to scrape the website for the variables that Score.1, type of material, seating, launch, and restraint. All the variables obtained from Coaster Critic, except for Score.1, were made into a binary. In each variable there was one dominating category and the rest of the levels within the variable had very few observations, so they were combined into one level and labeled as not-the-dominating level. For example, the type of material had the levels Steel (0), and Other (1-Not Steel). This was done to have more observations that have similar variable input to create a more complete pattern within the model.
+
+```{r, warning=FALSE, echo=FALSE}
+#read in data files
+review1<-read.csv("Roller Coaster Reviews.csv")
+review1<-rename(review1,Rollercoaster = ï..Roller.Coaster)
+
+anotha1 <- read.csv("roller_coasters.csv")
+anotha1 <- rename(anotha1, Rollercoaster=name)
+```
+
+```{r, warning=FALSE, echo=FALSE}
+#attach scoring from online score captaincoaster
+get_info <- function(ttcodes){
+  url <- NULL ; score <- NULL; name <- NULL
+  for (i in seq(ttcodes)) {
+      url[i] <- paste("https://captaincoaster.com/en/coasters/", ttcodes[i], sep="")
+      
+      score[i]<-try(read_html(url[i]) %>% html_nodes(".text-semibold.text-right") %>% html_text() %>%  
+                  parse_number(locale=locale(decimal_mark=",")), silent=TRUE)
+      
+      name[i]<- ttcodes[i]
+  }
+
+  return(data.frame(score, name, stringsAsFactors = FALSE))
+}
+
+#clean the names of the coasters needed for scoring so it can be attached to the url in get_info
+review1 <- review1 %>% mutate(url = tolower(paste(Rollercoaster, Amusement.Park)))
+review1$url <-str_remove_all(review1$url, "[.]")
+review1$url <-str_remove_all(review1$url, "[,]")
+review1$url <-str_remove_all(review1$url, "[-]")
+review1$url <-str_replace_all(review1$url, fixed("'"), "-")
+review1$url <-str_replace_all(review1$url, fixed(":"), "")
+review1$url <-str_replace_all(review1$url, fixed(" "), "-")
+review1$url <-str_replace_all(review1$url, fixed("--"), "-")
+review1$url <-str_replace_all(review1$url, fixed("--"), "-")
+addition_url <- review1$url
+
+#r cannot service all the open source code at once so...
+blah<-get_info(addition_url[1:15])
+blah2<-get_info(addition_url[16:35])
+blah3<-get_info(addition_url[36:40])
+blah4<-get_info(addition_url[41:47])
+blah5<-get_info(addition_url[48:49])
+blah6<-get_info(addition_url[50:55])
+blah7<-get_info(addition_url[56:66])
+blah8<-get_info(addition_url[67:80])
+blah9<-get_info(addition_url[81:91])
+blah10<-get_info(addition_url[92:105])
+blah11<-get_info(addition_url[106:107])
+blah12<-get_info(addition_url[107:110])
+blah13<-get_info(addition_url[111:112])
+blah14<-get_info(addition_url[113])
+blah15<-get_info(addition_url[114:119])
+blah16<-get_info(addition_url[120:130])
+blah17<-get_info(addition_url[131:140])
+blah18<-get_info(addition_url[141:142])
+blah19<-get_info(addition_url[143:144])
+blah20<-get_info(addition_url[145:147])
+blah21<-get_info(addition_url[148:149])
+
+#combine the data frames from the individual assessments above
+together<-rbind(blah,blah2)
+together<-rbind(together,blah3)
+together<-rbind(together,blah4)
+together<-rbind(together,blah5)
+together<-rbind(together,blah6)
+together<-rbind(together,blah7)
+together<-rbind(together,blah8)
+together<-rbind(together,blah9)
+together<-rbind(together,blah10)
+together<-rbind(together,blah11)
+together<-rbind(together,blah12)
+together<-rbind(together,blah13)
+together<-rbind(together,blah14)
+together<-rbind(together,blah15)
+together<-rbind(together,blah16)
+together<-rbind(together,blah17)
+together<-rbind(together,blah18)
+together<-rbind(together,blah19)
+together<-rbind(together,blah20)
+together<-rbind(together,blah21)
+
+
+#this possibility was an afterthought and also seems to have a slight issue with entry 49, but works weel up to that point...
+# outline <-get_info(addition_url[1])
+# 
+# score.df <- outline[FALSE,]
+# k=1
+#   for (k in seq(addition_url)) {
+#     score.df[k,]<-get_info(addition_url[k])
+#   }
+
+#clean that data frame
+together1$score <- as.numeric(together1$score)
+together1 <- na.omit(together1)
+new_n_improved <- together1$name
+```
+
+```{r, warning=FALSE, echo=FALSE}
+#get additional information that the original data set did not have to add potential predictor variables
+get_data <- function(ttcodes){
+  url <- NULL ;name <- NULL; model <- NULL; launch <- NULL; restraint <- NULL 
+  for (i in seq(ttcodes)) {
+    url[i] <- paste("https://captaincoaster.com/en/coasters/", ttcodes[i], sep="")
+    a<- read_html(url[i])
+      model[i] <- try(a %>% html_nodes(".list-group-item:nth-child(7) .pull-right") %>% html_text(), silent=TRUE)
+      launch[i] <- try(a %>% html_nodes(".list-group-item:nth-child(8) .pull-right") %>% html_text(), silent=TRUE)
+      restraint[i] <- try(a %>% html_nodes(".list-group-item:nth-child(9) .pull-right") %>% html_text(), silent=TRUE)
+      name[i]<- ttcodes[i]
+  }
+  return(data.frame(name, height, length, speed, inversions, status, type, train, model, launch, restraint, stringsAsFactors = FALSE))
+}
+
+yes[1,]<-get_data(new_n_improved[1])
+
+df <- yes[FALSE,]
+j=1
+  for (j in seq(new_n_improved)) {
+    df[j,]<-get_data(new_n_improved[j])
+  }
+```
+
+```{r, warning=FALSE, echo=FALSE}
+#put togethter all the data sets and clean it
+almost_final<-merge(together1,df, by="name")
+almost_final <- rename(almost_final,url=name)
+final <- merge(almost_final,review1, by="url")
+final <- na.omit(final)
+f<-merge(review1,anotha1, by="Rollercoaster")
+f <- rename(f,url=R)
+t<-merge(f,almost_final, by="url")
+t2 <- t[,-c(13,16:22,26)]
+t2<-na.omit(t2)
+#setwd("C:/Users/murph/Documents/STAT 549/Final/Roller-Coasters/")
+#write.csv(t2,"C:/Users/murph/Documents/STAT 549/Final/Roller-Coasters/FileName.csv", row.names = FALSE)
+```
+
+```{r, warning=FALSE, echo=FALSE}
+#read in final data set from above
+coaster_data <- read.csv("FileName.csv")
+
+coaster_data<-coaster_data %>% separate(Rating, c("Score.2","Cat_score"), " ")
+coaster_data$Score.2 <- as.double(coaster_data$Score.2)
+```
+
+
+```{r, echo=FALSE, include=FALSE}
+#clean the factors up so analysis could actually be used on additional predictor variables
+coaster_data$launch <- str_trim(coaster_data$launch)
+coaster_data_cat <- coaster_data %>% mutate(Factor.material = case_when(material_type == "Steel" ~ 0,
+                                                                     TRUE ~ 1))
+coaster_data_cat <- coaster_data_cat %>% mutate(Factor.seating = case_when(seating_type == "Sit Down" ~ 0,
+                                                                     TRUE ~ 1))
+coaster_data_cat <- coaster_data_cat %>% mutate(Factor.launch = case_when(launch == "Chain lift hill" ~ 0,
+                                                                     TRUE ~ 1))
+coaster_data_cat <- coaster_data_cat %>% mutate(Factor.restraint = case_when(restraint == "Lap bar" ~ 0,
+                                                                     restraint == "Common lap bar" ~ 0,
+                                                                     TRUE~ 1))
+coaster_data_cat <- coaster_data_cat[,c(4,9:12,15, 18:21)]
+
+coaster_data_cat$Factor.material <- as.factor(coaster_data_cat$Factor.material)
+coaster_data_cat$Factor.seating <- as.factor(coaster_data_cat$Factor.seating)
+coaster_data_cat$Factor.launch <- as.factor(coaster_data_cat$Factor.launch)
+coaster_data_cat$Factor.restraint <- as.factor(coaster_data_cat$Factor.restraint)
+
+coaster_data_cat[,1:6] <- scale(coaster_data_cat[,1:6])
+```
+DATA EXPLORATION
+
+Initially, pairs of every variable were graphed to get an idea of which variables looked interesting and how they work with each other. Also, a correlation matrix was useful in determining which quantitative variables were correlated with each other, as seen below. The Speed and Height variables were found to be highly correlated at .95. To account for this correlation, only the Speed variable was used when building the model.
+
+```{r, echo=FALSE, warning=FALSE, include=FALSE}
+# data exploration
+pairs(coaster_data[,c(4,7,8,9,10,11,12,15,17)])
+
+#correlation
+corr_matrix <- model.matrix(~0+., data=coaster_data[,c(4,9,10,11,12,15)]) %>% 
+  cor(use="pairwise.complete.obs") %>% 
+  ggcorrplot(show.diag = F, type="lower", lab=TRUE, lab_size=2, title = "Correlation Matrix", ggtheme = ggplot2::theme_gray, hc.order=TRUE, method = "circle", outline.color = "white", colors = c("#95E03D", "white", "#AB00FF")) + scale_x_discrete(labels=c("speed.x"="Speed", "height.x"="Height", "length.x"="Length", "score"="Score 1", "Score.2"="Score 2")) + scale_y_discrete(labels=c("speed.x"="Speed", "length.x"="Length", "num_inversions"="Number of \n Inversions", "score"="Score 1", "Score.2"="Score 2"))
+```
+
+```{r, echo=FALSE, warning=FALSE}
+corr_matrix
+```
+
+Since there are too many variables to meaningfully represent in a graph, kmeans clustering was used to reduce the number of dimensions. Looking at the scree plot, two or three clusters would be the most descriptive. Using three clusters was determined to be the best because they had the least overlap between clusters while still explaining a relatively high amount of variability in the data. Four clusters had one cluster overlapping the other two, and the grouping for two clusters was too vague.
+
+```{r, echo=FALSE, include=FALSE}
+coasters.k3 <- kmeans(scale(coaster_data_cat[,1:6]), centers=3, iter.max = 200, nstart = 50)
+coasters.k3  #46.9%
+
+n <- nrow(scale(coaster_data_cat[,1:6]))  #scree plot
+wss <- rep(0, 6)
+wss[1] <- (n - 1) * sum(apply(scale(coaster_data_cat[,1:6]), 2,var))
+for (i in 2:6){
+  wss[i] <- sum(kmeans(scale(coaster_data_cat[,1:6]), centers = i, iter.max=200, nstart=50)$withinss)
+  plot(1:6, wss, type = "b", xlab = "Number of clusters", ylab = "Within groups sum of squares")
+}
+```
+
+
+```{r, echo=FALSE}
+# kmeans cluster plot
+clusplot(coaster_data_cat[,1:6], coasters.k3$cluster, color=TRUE, shade=TRUE, labels=5, lines=0, col.clus = c("dark red", "dark blue", "dark green"), col.p = "black", main = "Three Clusters of Kmeans")
+
+```
+
+Three clusters also would make sense when looking at common methods to handle a 1-10 scaling. If a person rates an experience 1-6, that is considered bad and is put in its own group, while 7-8 is neutral, and 9-10 is excellent. The clusters do seem to follow this pattern. In general, cluster 1 seems to be rollercoasters with higher scores, speed, length, and height. Cluster 2 generally scores in between clusters 1 and 3, but has the lowest speed, height, and length. Cluster 3 is the lowest scoring cluster, about 30% lower scores than cluster 2, but it’s length, speed, and height are in between clusters 1 and 2. All 3 clusters had similar values for number of inversions. 
+
+```{r, include=FALSE, echo=FALSE}
+# samples within cluster 1
+c1 <-coaster_data_cat[which(coasters.k3$cluster == 1),]
+c1 <- c1 %>% mutate(cluster =1)
+# samples within cluster 2
+c2 <-coaster_data_cat[which(coasters.k3$cluster == 2),]
+c2 <- c2 %>% mutate(cluster =2)
+#samples within cluster 3
+c3 <-coaster_data_cat[which(coasters.k3$cluster == 3),]
+c3 <- c3 %>% mutate(cluster =3)
+
+c12 <- rbind(c1, c2)
+c123 <- rbind(c12,c3)
+```
+
+
+```{r, echo=FALSE}
+cluster.c<-cbind(coaster_data, coasters.k3$cluster) #cluster frequency plots
+colnames(cluster.c)[18]<-c("Group")
+cluster.c[,18] <- as.factor(cluster.c[,18])
+
+score2.plot <- ggplot(data = cluster.c, aes(x=Group, y=`Score.2`)) +
+  geom_boxplot(aes(color = Group)) +
+  xlab(label = NULL) + ylab(label = "Score 2") + ggtitle("Score 2 by Cluster Group") + guides(fill=guide_legend(title="Groups")) + ggthemes::theme_clean() + ggthemes::scale_color_few()
+#score2.plot
+
+speed.plot <- ggplot(data = cluster.c, aes(x=Group, y=`speed.x`)) +
+  geom_boxplot(aes(color = Group)) +
+  xlab(label = NULL) + ylab(label = "Speed") + ggtitle("Speed by Cluster Group") + guides(fill=guide_legend(title="Groups")) + ggthemes::theme_clean()+ ggthemes::scale_color_few()
+#speed.plot
+
+score1.plot <- ggplot(data = cluster.c, aes(x=Group, y=`score`)) +
+  geom_boxplot(aes(color = Group)) +
+  xlab(label = NULL) + ylab(label = "Score 1") + ggtitle("Score 1 by Cluster Group") + guides(fill=guide_legend(title="Groups"))+ ggthemes::theme_clean()+ ggthemes::scale_color_few()
+#score1.plot
+
+inv.plot <- ggplot(data = cluster.c, aes(x=Group, y=`num_inversions`)) +
+  geom_boxplot(aes(color = Group)) +
+  xlab(label = NULL) + ylab(label = "Inversions") + ggtitle("Inversions by Cluster Group") + guides(fill=guide_legend(title="Groups"))+ ggthemes::theme_clean()+ ggthemes::scale_color_few()
+#inv.plot
+
+all.plot <- grid.arrange(score1.plot, score2.plot, speed.plot, inv.plot)
+
+```
+
+METHODS 
+
+The next step after data exploration is to start the modeling. In this case, the goal was to model roller coaster ratings (the “Score.1” and “Score.2” variables) based on the seven predictor variables. Before modeling can begin, the full data set must be split into training and validation sets. For this model, the training data was comprised of 60% of the full data set, with the remaining 40% being delegated to the validation set. Then a full model was built in R using the lm() function from the “stats” package with the training data. Based on the summary of this model, the predictors Factor.launch, Factor.seating1, and speed were significant in predicting “Score.1”, while Factor.launch was the only significant predictor for “Score.2”. Recall that the speed accounts for both coaster speed and coaster height, as these two predictors are so highly correlated.  
+Both response variables were also modeled on their own to check model assumptions using several graphs. These graphs include a Q-Q Plot, which is used to check normality, as well as a Residuals vs Fitted graph which checks for non-linear patterns. Also graphed was Scale-Location and a Residuals vs Leverage graph. In the Scale-Location graph, if there are no “megaphone” shapes, or some other uniform shape, that checks out. For Residuals vs Leverage, a Cooke’s distance above 1 would indicate some trouble. The graphs for the two individual models are shown below.   
+
+```{r, echo=FALSE, include=FALSE}
+set.seed(69)
+
+train.index <- sample(c(1:dim(coaster_data_cat)[1]), dim(coaster_data_cat)[1]*0.6)  
+train.df <- coaster_data_cat[train.index, ]
+valid.df <- coaster_data_cat[-train.index, ]
+```
+
+```{r, include=FALSE}
+coaster.model <- lm(cbind(score, Score.2) ~  Factor.launch + Factor.restraint + Factor.seating + Factor.material + length.x + num_inversions + speed.x, data = train.df) # make the model
+summary(coaster.model)
+```
+
+```{r}
+score.1 <- lm(score ~ Factor.launch + Factor.restraint + Factor.seating + Factor.material + length.x + num_inversions + speed.x, data = train.df)
+summary(score.1)
+
+score.2 <- lm(Score.2 ~ Factor.launch + Factor.restraint + Factor.seating + Factor.material  + length.x + num_inversions + speed.x, data = train.df)
+summary(score.2)
+```
+
+```{r}
+par(mfrow=c(2,2)) # Change the panel layout to 2 x 2
+plot(score.1)
+par(mfrow=c(1,1)) # Change back
+```
+
+```{r}
+par(mfrow=c(2,2)) # Change the panel layout to 2 x 2
+plot(score.2)
+par(mfrow=c(1,1)) # Change back
+```
+
+In this case, no red flags have been raised after looking at these graphs so the diagnostics for these models are assumed to be met. Now the model building process may proceed into testing predictors for model inclusion phase. 
+
+```{r} 
+#prints a lot
+resid(coaster.model) #model residuals
+fitted(coaster.model) #model fitted values
+coef(coaster.model) #model coefficients
+sigma(coaster.model) #model residual standard error
+```
+
+```{r}
+round(vcov(coaster.model),2) #prints a lot
+```
+The first step in testing predictors for model inclusion is to look at the full model summary and determine which variables are contributing the most and which are contributing the least to prediction. One of the easier ways to do this is using the anova() function from the “car” package. This function’s default options are for a Type II MANOVA test, which tests each predictor assuming all other predictors are already in the model and using the Pillai test statistic. This MANOVA test showed that Factor.launch and speed are contributing the most to model prediction, so a model was then fit with just those predictors. This model was tested against the full model using the anova() function. The ANOVA (Analysis of Variance) test resulted in a p-value of 0.8119. Since the p-value is greater than the alpha 0.05, there is an assumption that the model with only Factor.launch and speed as predictors fits as well as the full model.
+
+```{r}
+Anova(coaster.model) # check to see which, if any, variables have high p-values
+```
+
+ 
+```{r}
+coaster.model.2 <- update(coaster.model, .~.-Factor.restraint-Factor.seating-Factor.material-length.x-num_inversions)
+
+anova(coaster.model,coaster.model.2)
+# Anova(coaster.model.2)
+# summary(coaster.model.2)
+```
+ 
+Since the reduced model fits as well as the full model, the predictions of roller coaster score were made using the reduced model, the training data, and the predict() function to check for overfitting. Once the predictions were made, the two score variables were converted into a categorical variable indicating a “Good” and a “Bad” rollercoaster. For the “Score.1” variable, which was on a 0-100 scale, this cut-off point was 70.00 points. For the “Score.2” variable, which was on a 0-10 scale, this cut-off point was 7.00 points. Then a confusion matrix could be constructed using the confusionMatrix() function from the “caret” package. Here are the resulting confusion matrices on the training data: 
+
+```{r}
+ # making categorical variables for training
+ train.df$score.2.cat <- ifelse(train.df$Score.2 < 7.0, "Bad", "Good")
+
+ train.df$score.cat <- ifelse(train.df$score < 70.00, "Bad", "Good")
+```
+
+```{r}
+ # making predictions on training
+ nd_t <- train.df
+ p_t <- predict(coaster.model.2, nd_t)
+```
+
+```{r}
+confusionMatrix(as.factor(ifelse(p_t[,1] < 70.00, "Bad", "Good")), 
+                 as.factor(train.df$score.cat), positive="Good")
+```
+
+```{r}
+ confusionMatrix(as.factor(ifelse(p_t[,2] < 7, "Bad", "Good")), 
+                 as.factor(train.df$score.2.cat), positive="Good")
+```
+
+The reduced model had a 70.59% accuracy rate for predicting the “score” response, with a sensitivity rate of 61.29% and a specificity rate of 85.00%. The reduced model had an 78.43% accuracy rate for predicting the “Score.2” response with a sensitivity rate of 95.12% and a specificity rate of 10.00%. Thankfully, this does not show evidence of overfitting so the model can now be applied to the validation set. 
+
+RESULTS
+
+The same data manipulation, of making categorical variables was done to the validation set. Then the same confusion matrices were made. Here are those confusion matrices: 
+
+```{r}
+ # same on validation
+ nd <- valid.df
+ p <- predict(coaster.model.2, nd)
+
+ valid.df$score.2.cat <- ifelse(valid.df$Score.2 < 7.0, "Bad", "Good")
+
+ valid.df$score.cat <- ifelse(valid.df$score < 70.00, "Bad", "Good")
+```
+
+```{r}
+confusionMatrix(as.factor(ifelse(p[,2] < 7, "Bad", "Good")), 
+                as.factor(valid.df$score.2.cat), positive="Good")
+```
+
+```{r}
+confusionMatrix(as.factor(ifelse(p[,1] < 70.00, "Bad", "Good")), 
+                as.factor(valid.df$score.cat), positive="Good")
+```
+
+The reduced model had a 68.57% accuracy rate for predicting the “Score.1” response, with a sensitivity rate of 60.00% and a specificity rate of 80.00%. The reduced model had an 82.86% accuracy rate for predicting the “Score.2” response with a sensitivity rate of 92.86% and a specificity rate of 42.86%.
+
+CONCLUSION
+
+To save time and money a model was made based on the characteristics of rollercoasters to predict how well the rollercoaster would be received by the public. After looking at the variables from different quantitative and categorical viewpoints and proceeding to put it through models, the avenue took was a reduced model with just speed and Factor.launch. The multiple regression validation set was 68.57% accurate, which was only 2% less than the training set, implying that the model was not overfitted for the Score.1. The Score.2 response part of the model produced 82.86% accuracy, which is higher than the training accuracy, indicating the models are not over fit. The prediction for the “bad” group were worst off, because there were less observations within the group. Gathering more observations with low scores would help for further investigation and create a better overall model. 
+ 
+REFERENCES 
+
+“Amusement Park and Roller Coaster Engineering.” Ohio University, 7 Feb. 2020,  
+  https://onlinemasters.ohio.edu/blog/amusement-park-and-roller-coaster-engineering/. 
+R Core Team (2021). R: A language and environment for statistical computing. R Foundation for Statistical 
+  Computing, Vienna, Austria. URL https://www.R-project.org/. 
+“Roller Coaster Reviews List.” CoasterCritic, 29 Oct. 2019, 
+  https://coastercritic.com/roller-coaster-reviews/. 
+Stewart, Lyall. “Roller Coaster Data.” Kaggle, 1 Dec. 2020, 
+  https://www.kaggle.com/lyallstewart/roller-coaster-data. 
+“World Roller Coaster Rankings.” World Roller Coaster Rankings • Captain Coaster, 
+  https://captaincoaster.com/en/ranking/?filters%5Bcontinent%5D=&filters%5Bcountry%5D=26&filters%5BmaterialT
+  ype%5D=&filters%5BseatingType%5D=&filters%5Bmodel%5D=&filters%5Bmanufacturer%5D=&filters%5BopeningDate%5D=
+  &page=1. 
+ 

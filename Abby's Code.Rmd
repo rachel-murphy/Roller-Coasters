@@ -1,0 +1,115 @@
+---
+title: "Abby's Code"
+author: "Abby Runge"
+date: "12/20/2021"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+set.seed(69)
+
+train.index <- sample(c(1:dim(coaster_data_cat)[1]), dim(coaster_data_cat)[1]*0.6)  
+train.df <- coaster_data_cat[train.index, ]
+valid.df <- coaster_data_cat[-train.index, ]
+```
+
+```{r}
+coaster.model <- lm(cbind(score, Score.2) ~  Factor.launch + Factor.restraint + Factor.seating + Factor.material + length.x + num_inversions + speed.x, data = train.df) # make the model
+summary(coaster.model)
+```
+
+```{r}
+score.1 <- lm(score ~ Factor.launch + Factor.restraint + Factor.seating + Factor.material + length.x + num_inversions + speed.x, data = train.df)
+summary(score.1)
+
+score.2 <- lm(Score.2 ~ Factor.launch + Factor.restraint + Factor.seating + Factor.material  + length.x + num_inversions + speed.x, data = train.df)
+summary(score.2)
+```
+
+```{r}
+par(mfrow=c(2,2)) # Change the panel layout to 2 x 2
+plot(score.1)
+par(mfrow=c(1,1)) # Change back
+```
+```{r}
+par(mfrow=c(2,2)) # Change the panel layout to 2 x 2
+plot(score.2)
+par(mfrow=c(1,1)) # Change back
+```
+
+```{r}
+resid(coaster.model) #model residuals
+fitted(coaster.model) #model fitted values
+coef(coaster.model) #model coefficients
+sigma(coaster.model) #model residual standard error
+```
+
+```{r}
+round(vcov(coaster.model),2)
+```
+
+```{r}
+library(car)
+Anova(coaster.model) # check to see which, if any, variables have high p-values
+```
+ looks like the only "significant" predictors are Factor.launch and speed.x so lets fit a model with just those and see what we see
+ 
+```{r}
+coaster.model.2 <- update(coaster.model, .~.-Factor.restraint-Factor.seating-Factor.material-length.x-num_inversions)
+
+anova(coaster.model,coaster.model.2)
+# Anova(coaster.model.2)
+# summary(coaster.model.2)
+```
+ 
+Okay according to this anova, the model that has just Factor.launch and speed.x (which is accounting for speed and height since these variables are so highly correlated) performs just as well as the model with all the predictors.
+
+```{r}
+# making categorical variables for training
+train.df$score.2.cat <- ifelse(train.df$Score.2 < 7.0, "Bad", "Good")
+
+train.df$score.cat <- ifelse(train.df$score < 70.00, "Bad", "Good")
+```
+
+```{r}
+# making predictions on training
+nd_t <- train.df
+p_t <- predict(coaster.model.2, nd_t)
+```
+
+```{r}
+library(caret)
+confusionMatrix(as.factor(ifelse(p_t[,1] < 70.00, "Bad", "Good")), 
+                as.factor(train.df$score.cat), positive="Good")
+```
+
+```{r}
+confusionMatrix(as.factor(ifelse(p_t[,2] < 7, "Bad", "Good")), 
+                as.factor(train.df$score.2.cat), positive="Good")
+```
+
+```{r}
+# same on validation
+nd <- valid.df
+p <- predict(coaster.model.2, nd)
+
+valid.df$score.2.cat <- ifelse(valid.df$Score.2 < 7.0, "Bad", "Good")
+
+valid.df$score.cat <- ifelse(valid.df$score < 70.00, "Bad", "Good")
+```
+
+```{r}
+library(caret)
+confusionMatrix(as.factor(ifelse(p[,2] < 7, "Bad", "Good")), 
+                as.factor(valid.df$score.2.cat), positive="Good")
+```
+
+```{r}
+confusionMatrix(as.factor(ifelse(p[,1] < 70.00, "Bad", "Good")), 
+                as.factor(valid.df$score.cat), positive="Good")
+```
+
